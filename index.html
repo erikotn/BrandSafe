@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrandSafe | Palette & Accessibility Tool</title>
+    <title>BrandSafe | Design Workbench</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,9 +37,9 @@
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- ColorThief -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+    
+    <!-- Html2Canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         /* Custom Utilities */
@@ -86,6 +86,41 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Crosshair cursor for image picker */
+        .cursor-crosshair { cursor: crosshair; }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            margin-top: -5px; 
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: #475569;
+        }
+        
+        /* Slide Modal */
+        .slide-modal {
+            backdrop-filter: blur(10px);
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+        
+        /* 16:9 Aspect Ratio */
+        .aspect-16-9 {
+            aspect-ratio: 16 / 9;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-200">
@@ -96,52 +131,66 @@
             <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
             <h1 class="text-xl font-bold tracking-tight">Brand<span class="text-blue-500">Safe</span></h1>
         </div>
-        <div class="text-xs font-medium text-agency-500 uppercase tracking-widest hidden sm:block">Accessibility & Palette Extractor</div>
+        <div class="flex items-center gap-4">
+             <button id="btn-show-slide" class="text-xs bg-agency-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition font-medium flex items-center gap-2">
+                <i class="fa-solid fa-desktop"></i> Presentation Mode
+            </button>
+        </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         
-        <!-- LEFT PANEL: Source & Extraction -->
+        <!-- LEFT PANEL: Image & Palette -->
         <section class="w-full md:w-5/12 lg:w-4/12 border-r border-agency-700 flex flex-col bg-agency-800/50 overflow-y-auto custom-scrollbar">
             <div class="p-6 space-y-8">
                 
-                <!-- Upload Zone -->
+                <!-- Upload Zone / Image Canvas -->
                 <div>
-                    <h2 class="text-sm font-semibold text-agency-500 mb-3 uppercase tracking-wider">1. Source Image</h2>
-                    <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 p-8 text-center transition hover:border-blue-500 hover:bg-agency-700/50 cursor-pointer group">
-                        <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="pointer-events-none">
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
-                            <p class="text-sm font-medium text-slate-300">Drop brand asset here</p>
-                            <p class="text-xs text-slate-500 mt-1">or click to browse</p>
+                    <div class="flex justify-between items-end mb-3">
+                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">1. Source Image</h2>
+                        <div class="flex gap-3 items-center">
+                            <span id="picker-hint" class="text-[10px] text-blue-400 opacity-0 transition-opacity">Click to pick</span>
+                            <button id="btn-reset-image" class="text-[10px] text-slate-400 hover:text-white underline hidden">Change Image</button>
+                        </div>
+                    </div>
+
+                    <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 text-center transition hover:border-blue-500 hover:bg-agency-700/50 cursor-pointer group min-h-[200px] flex flex-col items-center justify-center overflow-hidden">
+                        
+                        <!-- File Input overlay -->
+                        <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        
+                        <!-- Empty State -->
+                        <div id="upload-placeholder" class="pointer-events-none p-8">
+                            <i class="fa-solid fa-eye-dropper text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
+                            <p class="text-sm font-medium text-slate-300">Upload Image</p>
+                            <p class="text-xs text-slate-500 mt-1">to enable color picker</p>
+                        </div>
+
+                        <!-- Image Canvas (Hidden until loaded) -->
+                        <div id="canvas-container" class="hidden relative w-full h-full bg-agency-900 z-10">
+                            <!-- Helper Canvas -->
+                            <canvas id="img-canvas" class="cursor-crosshair w-full h-auto object-contain block mx-auto"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Preview Image (Hidden initially) -->
-                <div id="image-preview-container" class="hidden">
-                    <div class="relative rounded-lg overflow-hidden border border-agency-600 shadow-xl">
-                        <img id="uploaded-image" src="" alt="Uploaded Asset" class="w-full object-cover max-h-64">
-                    </div>
-                </div>
-
-                <!-- Colors Section -->
+                <!-- Palette Section -->
                 <div>
-                     <h2 class="text-sm font-semibold text-agency-500 mb-3 uppercase tracking-wider">2. Project Colors</h2>
+                     <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">2. Palette</h2>
+                        <button id="clear-palette" class="text-[10px] text-slate-500 hover:text-red-400 underline">Clear All</button>
+                     </div>
                      
-                     <!-- Quick & Manual Tools -->
+                     <!-- Quick Tools -->
                      <div class="flex flex-wrap gap-2 mb-4">
-                        <!-- Pure Black -->
                         <button onclick="handleSwatchClick('#000000')" class="w-10 h-10 rounded-lg bg-black border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure Black">
                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 text-white rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
                         </button>
-                        <!-- Pure White -->
                         <button onclick="handleSwatchClick('#ffffff')" class="w-10 h-10 rounded-lg bg-white border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure White">
                              <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 text-black rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
                         </button>
 
-                        <!-- Manual Add Input -->
                         <div class="flex-1 flex min-w-[140px]">
                             <input type="text" id="manual-hex-input" placeholder="#HEX..." class="w-full bg-agency-900 border border-agency-600 border-r-0 rounded-l-lg px-3 text-xs font-mono uppercase focus:outline-none focus:border-blue-500">
                             <button id="btn-add-manual" class="bg-agency-700 hover:bg-agency-600 border border-agency-600 px-3 rounded-r-lg text-slate-300 transition">
@@ -153,7 +202,7 @@
                     <!-- Palette Grid -->
                     <div id="palette-grid" class="grid grid-cols-5 gap-3 min-h-[60px]">
                         <div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">
-                            Upload image or add colors manually
+                            Click image to extract colors
                         </div>
                     </div>
                 </div>
@@ -161,15 +210,14 @@
             </div>
         </section>
 
-        <!-- RIGHT PANEL: Compliance & Controls -->
+        <!-- RIGHT PANEL: Editor & Checks -->
         <section class="flex-1 bg-agency-900 flex flex-col overflow-y-auto custom-scrollbar">
             <div class="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto w-full space-y-8">
 
-                <!-- Control Panel -->
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">Controls</h2>
-                        
+                <!-- Editor Controls -->
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">Design Workbench</h2>
                         <!-- Format Toggle -->
                         <div class="flex bg-agency-800 rounded-lg p-1 border border-agency-700">
                             <button onclick="toggleFormat('hex')" id="fmt-hex" class="px-3 py-1 text-[10px] font-bold rounded bg-slate-600 text-white shadow-sm transition-all">HEX</button>
@@ -180,159 +228,246 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
                         <!-- Background Control -->
-                        <div id="control-bg" class="cursor-pointer bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative">
-                            <div class="flex justify-between items-start mb-2">
-                                <label class="text-xs font-semibold text-agency-500 uppercase tracking-wider group-hover:text-blue-400 transition-colors">Background</label>
-                                <div class="w-3 h-3 rounded-full bg-slate-600" id="indicator-bg"></div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-lg border border-agency-600 shadow-inner transition-colors" id="bg-visual-indicator"></div>
-                                <div class="flex-1">
-                                    <input type="text" id="bg-text" class="bg-transparent border-b border-agency-600 text-white font-mono text-lg font-medium w-full focus:outline-none focus:border-blue-500 uppercase py-1 transition-colors">
-                                    <p class="text-[10px] text-slate-500 mt-1">Select or Type</p>
+                        <div id="control-bg" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-active">
+                            <!-- Click overlay for mode selection -->
+                            <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('bg')"></div>
+
+                            <div class="relative z-10 pointer-events-none">
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="text-xs font-semibold text-agency-500 uppercase tracking-wider">Background</label>
+                                    <div class="w-3 h-3 rounded-full bg-slate-600" id="indicator-bg"></div>
                                 </div>
-                                <input type="color" id="bg-picker" class="ml-auto opacity-50 hover:opacity-100 transition-opacity">
+                                <div class="flex items-center gap-4 pointer-events-auto">
+                                    <div class="w-10 h-10 rounded-lg border border-agency-600 shadow-inner transition-colors" id="bg-visual-indicator"></div>
+                                    <div class="flex-1">
+                                        <input type="text" id="bg-text" class="bg-transparent border-b border-agency-600 text-white font-mono text-lg font-medium w-full focus:outline-none focus:border-blue-500 uppercase py-1 transition-colors">
+                                    </div>
+                                    <button onclick="addToPalette('bg')" class="pointer-events-auto text-slate-500 hover:text-blue-400 transition" title="Add to Palette">
+                                        <i class="fa-solid fa-square-plus text-xl"></i>
+                                    </button>
+                                    <input type="color" id="bg-picker" class="opacity-50 hover:opacity-100 transition-opacity">
+                                </div>
+                                <!-- Lightness Slider -->
+                                <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
+                                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                                        <span>Darker</span>
+                                        <span>Lightness</span>
+                                        <span>Lighter</span>
+                                    </div>
+                                    <input type="range" id="bg-lightness" min="-20" max="20" value="0" step="1" class="w-full">
+                                </div>
                             </div>
                         </div>
 
                         <!-- Text Control -->
-                        <div id="control-text" class="cursor-pointer bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative">
-                            <div class="flex justify-between items-start mb-2">
-                                <label class="text-xs font-semibold text-agency-500 uppercase tracking-wider group-hover:text-blue-400 transition-colors">Typography</label>
-                                <div class="w-3 h-3 rounded-full bg-slate-600" id="indicator-text"></div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-lg border border-agency-600 shadow-inner transition-colors" id="text-visual-indicator"></div>
-                                <div class="flex-1">
-                                    <input type="text" id="text-text" class="bg-transparent border-b border-agency-600 text-white font-mono text-lg font-medium w-full focus:outline-none focus:border-blue-500 uppercase py-1 transition-colors">
-                                    <p class="text-[10px] text-slate-500 mt-1">Select or Type</p>
+                        <div id="control-text" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-inactive">
+                             <!-- Click overlay for mode selection -->
+                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('text')"></div>
+
+                             <div class="relative z-10 pointer-events-none">
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="text-xs font-semibold text-agency-500 uppercase tracking-wider">Typography</label>
+                                    <div class="w-3 h-3 rounded-full bg-slate-600" id="indicator-text"></div>
                                 </div>
-                                <input type="color" id="text-picker" class="ml-auto opacity-50 hover:opacity-100 transition-opacity">
+                                <div class="flex items-center gap-4 pointer-events-auto">
+                                    <div class="w-10 h-10 rounded-lg border border-agency-600 shadow-inner transition-colors" id="text-visual-indicator"></div>
+                                    <div class="flex-1">
+                                        <input type="text" id="text-text" class="bg-transparent border-b border-agency-600 text-white font-mono text-lg font-medium w-full focus:outline-none focus:border-blue-500 uppercase py-1 transition-colors">
+                                    </div>
+                                    <button onclick="addToPalette('text')" class="pointer-events-auto text-slate-500 hover:text-blue-400 transition" title="Add to Palette">
+                                        <i class="fa-solid fa-square-plus text-xl"></i>
+                                    </button>
+                                    <input type="color" id="text-picker" class="opacity-50 hover:opacity-100 transition-opacity">
+                                </div>
+                                <!-- Lightness Slider -->
+                                <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
+                                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                                        <span>Darker</span>
+                                        <span>Lightness</span>
+                                        <span>Lighter</span>
+                                    </div>
+                                    <input type="range" id="text-lightness" min="-20" max="20" value="0" step="1" class="w-full">
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Swap & Stats Row -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    
-                    <!-- Stats Card -->
-                    <div class="bg-agency-800 rounded-2xl p-6 border border-agency-700 shadow-lg">
-                        <!-- Header with Gap Fix -->
-                        <div class="flex justify-between items-start mb-6 gap-4">
-                            <div class="flex flex-col min-w-0">
-                                <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider truncate">WCAG Check</h2>
-                                <span class="text-xs text-agency-600 mt-1">Raw Ratio: <span id="contrast-ratio" class="font-mono font-bold">--</span></span>
-                            </div>
-                            <button id="btn-swap" class="shrink-0 bg-agency-700 hover:bg-agency-600 border border-agency-600 text-slate-300 px-3 py-2 rounded-lg transition flex items-center justify-center gap-2 text-xs font-medium shadow-sm">
-                                <i class="fa-solid fa-arrow-right-arrow-left"></i> Swap
-                            </button>
+                <!-- Stats & Checks -->
+                <div class="bg-agency-800 rounded-2xl p-6 border border-agency-700 shadow-lg">
+                     <!-- Header -->
+                     <div class="flex justify-between items-start mb-6 gap-4">
+                        <div class="flex flex-col min-w-0">
+                            <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider truncate">WCAG Check</h2>
+                            <span class="text-xs text-agency-600 mt-1">Raw Ratio: <span id="contrast-ratio" class="font-mono font-bold">--</span></span>
                         </div>
-
-                        <!-- Column Headers -->
-                        <div class="grid grid-cols-2 gap-4 mb-1 px-1">
-                            <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AA</div>
-                            <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AAA</div>
-                        </div>
-
-                        <!-- Detailed Badges Grid with Spacing Fix (gap-3) -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <!-- Normal AA -->
-                            <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
-                                <div class="min-w-0">
-                                    <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
-                                    <p class="text-[10px] text-slate-500">Target: 4.5</p>
-                                </div>
-                                <div id="badge-aa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
-                            </div>
-                            <!-- Normal AAA -->
-                            <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
-                                <div class="min-w-0">
-                                    <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
-                                    <p class="text-[10px] text-slate-500">Target: 7.0</p>
-                                </div>
-                                <div id="badge-aaa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
-                            </div>
-                            <!-- Large AA -->
-                            <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
-                                <div class="min-w-0">
-                                    <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
-                                    <p class="text-[10px] text-slate-500">Target: 3.0</p>
-                                </div>
-                                <div id="badge-aa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
-                            </div>
-                            <!-- Large AAA -->
-                            <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
-                                <div class="min-w-0">
-                                    <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
-                                    <p class="text-[10px] text-slate-500">Target: 4.5</p>
-                                </div>
-                                <div id="badge-aaa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
-                            </div>
-                        </div>
+                        <button id="btn-swap" class="shrink-0 bg-agency-700 hover:bg-agency-600 border border-agency-600 text-slate-300 px-3 py-2 rounded-lg transition flex items-center justify-center gap-2 text-xs font-medium shadow-sm">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i> Swap
+                        </button>
                     </div>
 
-                    <!-- Live Preview Card -->
-                    <div class="flex flex-col h-full">
-                        <div class="flex justify-between items-center mb-3">
-                            <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">Preview</h2>
-                            <div class="flex gap-2 text-[10px] text-agency-500">
-                                 <span id="preview-msg" class="opacity-0 transition-opacity text-blue-400">Color Applied</span>
-                            </div>
-                        </div>
-                        
-                        <div id="preview-card" class="flex-1 w-full p-8 md:p-10 rounded-xl shadow-2xl transition-colors-fast border border-slate-700/20 flex flex-col items-start justify-center gap-6">
-                            <div class="space-y-3 w-full">
-                                <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Insight</span>
-                                <h3 id="preview-headline" class="text-3xl md:text-4xl font-bold tracking-tight leading-[1.1] max-w-sm">
-                                    Design with purpose.
-                                </h3>
-                            </div>
-                            <p id="preview-body" class="text-base md:text-lg opacity-80 leading-relaxed max-w-md font-light">
-                                Accessibility is not a constraint, it is the foundation of clarity.
-                            </p>
-                            <div class="flex gap-3 pt-2 w-full">
-                                <button class="px-5 py-2 rounded-md font-semibold text-xs transition bg-current text-white mix-blend-hard-light filter brightness-110">
-                                    <span class="mix-blend-normal text-current filter brightness-50 contrast-200">Start Now</span>
-                                </button>
-                                <button class="px-5 py-2 rounded-md font-semibold text-xs transition border border-current opacity-70 hover:opacity-100">
-                                    Learn More
-                                </button>
-                            </div>
-                        </div>
+                    <!-- Grid -->
+                    <div class="grid grid-cols-2 gap-4 mb-1 px-1">
+                        <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AA</div>
+                        <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AAA</div>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- AA Normal -->
+                        <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
+                            <div class="min-w-0">
+                                <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
+                                <p class="text-[10px] text-slate-500">Target: 4.5</p>
+                            </div>
+                            <div id="badge-aa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
+                        </div>
+                        <!-- AAA Normal -->
+                        <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
+                            <div class="min-w-0">
+                                <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
+                                <p class="text-[10px] text-slate-500">Target: 7.0</p>
+                            </div>
+                            <div id="badge-aaa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
+                        </div>
+                        <!-- AA Large -->
+                        <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
+                            <div class="min-w-0">
+                                <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
+                                <p class="text-[10px] text-slate-500">Target: 3.0</p>
+                            </div>
+                            <div id="badge-aa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
+                        </div>
+                        <!-- AAA Large -->
+                        <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
+                            <div class="min-w-0">
+                                <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
+                                <p class="text-[10px] text-slate-500">Target: 4.5</p>
+                            </div>
+                            <div id="badge-aaa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview (Small) -->
+                <div>
+                    <h2 class="text-sm font-semibold text-agency-500 mb-3 uppercase tracking-wider">Working Preview</h2>
+                    <div id="preview-card" class="w-full p-8 rounded-xl shadow-inner transition-colors-fast border border-slate-700/20 flex flex-col items-start gap-4">
+                        <h3 id="preview-headline" class="text-2xl font-bold tracking-tight leading-tight">
+                            Design with purpose.
+                        </h3>
+                        <p id="preview-body" class="text-base opacity-80 leading-relaxed font-light">
+                            Accessibility is not a constraint, it is the foundation of clarity.
+                        </p>
+                    </div>
                 </div>
 
             </div>
         </section>
     </main>
 
-    <!-- JavaScript Application Logic -->
+    <!-- SLIDE PRESENTATION MODAL -->
+    <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
+        
+        <!-- Controls overlay -->
+        <div class="absolute top-4 right-4 flex gap-3">
+             <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
+                <i class="fa-solid fa-download"></i> Download PNG
+            </button>
+            <button id="close-slide" class="text-slate-400 hover:text-white bg-agency-800 p-2 rounded-full w-10 h-10 flex items-center justify-center transition">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
+            <!-- Slide Content -->
+            <div class="flex-1 p-16 md:p-24 flex flex-col justify-center gap-8 relative z-10">
+                <div class="w-20 h-2 bg-current opacity-30 rounded-full mb-4"></div>
+                
+                <!-- Dutch Translated Content -->
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] max-w-4xl">
+                    Huisstijl.
+                </h1>
+                <p class="text-2xl md:text-3xl opacity-80 font-light max-w-2xl leading-relaxed">
+                    Deze kleurcombinatie voldoet aan de WCAG-toegankelijkheidsnormen voor digitaal gebruik.
+                </p>
+                
+                <div class="mt-8 flex flex-col md:flex-row gap-12 opacity-80">
+                     <!-- Colors -->
+                     <div class="flex gap-8 items-center">
+                         <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Achtergrond</span>
+                            <span class="font-mono text-xl" id="slide-bg-val">#1E293B</span>
+                         </div>
+                         <div class="w-px h-10 bg-current opacity-30"></div>
+                         <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Typografie</span>
+                            <span class="font-mono text-xl" id="slide-text-val">#FFFFFF</span>
+                         </div>
+                     </div>
+
+                     <!-- Compliance Table on Slide -->
+                     <div class="flex flex-col gap-2 border-l border-current border-opacity-30 pl-12">
+                         <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Validatie</span>
+                         <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-sm font-medium">
+                             <div class="flex items-center gap-2">
+                                 <span id="slide-aa-norm" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
+                                 <span>Normaal AA</span>
+                             </div>
+                             <div class="flex items-center gap-2">
+                                 <span id="slide-aaa-norm" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
+                                 <span>Normaal AAA</span>
+                             </div>
+                             <div class="flex items-center gap-2">
+                                 <span id="slide-aa-large" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
+                                 <span>Groot AA</span>
+                             </div>
+                             <div class="flex items-center gap-2">
+                                 <span id="slide-aaa-large" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
+                                 <span>Groot AAA</span>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+            </div>
+            
+            <!-- Decorators -->
+            <div class="absolute bottom-0 right-0 p-12 opacity-10 pointer-events-none">
+                <i class="fa-solid fa-universal-access text-9xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
     <script>
-        // --- State Management ---
+        // --- State ---
         const state = {
             bg: '#1e293b',
             text: '#ffffff',
-            activeMode: 'bg', // 'bg' or 'text'
-            displayFormat: 'hex', // 'hex' or 'rgb'
-            palette: [] // Array of hex strings
+            activeMode: 'bg',
+            displayFormat: 'hex',
+            palette: [],
+            // Store original values before lightness adjustment
+            baseBg: '#1e293b',
+            baseText: '#ffffff'
         };
 
-        // --- DOM Elements ---
+        // --- Elements ---
         const els = {
+            // Left Panel
             fileInput: document.getElementById('file-input'),
             dropZone: document.getElementById('drop-zone'),
-            imgPreview: document.getElementById('uploaded-image'),
-            imgContainer: document.getElementById('image-preview-container'),
+            uploadPlaceholder: document.getElementById('upload-placeholder'),
+            canvasContainer: document.getElementById('canvas-container'),
+            canvas: document.getElementById('img-canvas'),
+            pickerHint: document.getElementById('picker-hint'),
             paletteGrid: document.getElementById('palette-grid'),
-            
-            // Manual Add
             manualInput: document.getElementById('manual-hex-input'),
             btnAddManual: document.getElementById('btn-add-manual'),
+            btnClearPalette: document.getElementById('clear-palette'),
+            btnResetImage: document.getElementById('btn-reset-image'),
 
-            // Format Toggles
+            // Format
             fmtHex: document.getElementById('fmt-hex'),
             fmtRgb: document.getElementById('fmt-rgb'),
 
@@ -342,17 +477,20 @@
             indicatorBg: document.getElementById('indicator-bg'),
             indicatorText: document.getElementById('indicator-text'),
             
-            // Inputs inside controls
+            // Inputs
             bgPicker: document.getElementById('bg-picker'),
             bgText: document.getElementById('bg-text'),
+            bgLightness: document.getElementById('bg-lightness'),
+            
             textPicker: document.getElementById('text-picker'),
             textText: document.getElementById('text-text'),
+            textLightness: document.getElementById('text-lightness'),
+
             btnSwap: document.getElementById('btn-swap'),
             
             // Visuals
             bgVisual: document.getElementById('bg-visual-indicator'),
             textVisual: document.getElementById('text-visual-indicator'),
-            previewMsg: document.getElementById('preview-msg'),
             
             // Preview
             card: document.getElementById('preview-card'),
@@ -364,74 +502,344 @@
                 aaaNorm: document.getElementById('badge-aaa-normal'),
                 aaLarge: document.getElementById('badge-aa-large'),
                 aaaLarge: document.getElementById('badge-aaa-large'),
+            },
+
+            // Slide
+            btnShowSlide: document.getElementById('btn-show-slide'),
+            slideModal: document.getElementById('slide-modal'),
+            btnCloseSlide: document.getElementById('close-slide'),
+            btnDownloadSlide: document.getElementById('download-slide'),
+            slideContainer: document.getElementById('slide-container'),
+            slideBgVal: document.getElementById('slide-bg-val'),
+            slideTextVal: document.getElementById('slide-text-val'),
+            slideBadges: {
+                aaNorm: document.getElementById('slide-aa-norm'),
+                aaaNorm: document.getElementById('slide-aaa-norm'),
+                aaLarge: document.getElementById('slide-aa-large'),
+                aaaLarge: document.getElementById('slide-aaa-large'),
             }
         };
 
-        // --- Initialization ---
-        const colorThief = new ColorThief();
-
+        // --- Init ---
         function init() {
+            setMode('bg');
             updateUI();
-            setupEventListeners();
-            setMode('bg'); 
+            setupEvents();
         }
 
         // --- Event Listeners ---
-        function setupEventListeners() {
-            // Drag & Drop
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                els.dropZone.addEventListener(eventName, preventDefaults, false);
-            });
-            ['dragenter', 'dragover'].forEach(eventName => {
-                els.dropZone.addEventListener(eventName, () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'), false);
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                els.dropZone.addEventListener(eventName, () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'), false);
-            });
+        function setupEvents() {
+            // Canvas/Upload
+            els.fileInput.addEventListener('change', handleImageUpload);
+            els.canvas.addEventListener('click', handleCanvasClick);
+            els.btnResetImage.addEventListener('click', resetImage);
             
-            els.dropZone.addEventListener('drop', handleDrop, false);
-            els.fileInput.addEventListener('change', handleFiles, false);
-
-            // Mode Selection (Clicking the big box)
-            els.controlBg.addEventListener('click', (e) => {
-                if(e.target !== els.bgPicker && e.target !== els.bgText) setMode('bg');
-            });
-            els.controlText.addEventListener('click', (e) => {
-                if(e.target !== els.textPicker && e.target !== els.textText) setMode('text');
+            // Manual Palette
+            els.btnAddManual.addEventListener('click', addManualPaletteColor);
+            els.manualInput.addEventListener('keypress', (e) => { if(e.key==='Enter') addManualPaletteColor() });
+            els.btnClearPalette.addEventListener('click', () => {
+                state.palette = [];
+                renderPalette();
             });
 
-            // Native Color Pickers
-            els.bgPicker.addEventListener('input', (e) => updateColor('bg', e.target.value));
-            els.textPicker.addEventListener('input', (e) => updateColor('text', e.target.value));
+            // Native Pickers
+            els.bgPicker.addEventListener('input', (e) => {
+                state.baseBg = e.target.value;
+                els.bgLightness.value = 0; // Reset slider
+                updateColor('bg', e.target.value);
+            });
+            els.textPicker.addEventListener('input', (e) => {
+                state.baseText = e.target.value;
+                els.textLightness.value = 0; // Reset slider
+                updateColor('text', e.target.value);
+            });
 
-            // Manual Editable Inputs
+            // Manual Text Inputs
             els.bgText.addEventListener('input', (e) => handleManualInput('bg', e.target.value));
             els.textText.addEventListener('input', (e) => handleManualInput('text', e.target.value));
+
+            // Lightness Sliders (Visual Editor)
+            els.bgLightness.addEventListener('input', (e) => adjustLightness('bg', e.target.value));
+            els.textLightness.addEventListener('input', (e) => adjustLightness('text', e.target.value));
 
             // Swap
             els.btnSwap.addEventListener('click', () => {
                 const temp = state.bg;
-                updateColor('bg', state.text);
-                updateColor('text', temp);
+                const tempBase = state.baseBg;
+                
+                state.bg = state.text;
+                state.baseBg = state.baseText;
+                
+                state.text = temp;
+                state.baseText = tempBase;
+                
+                // Reset sliders
+                els.bgLightness.value = 0;
+                els.textLightness.value = 0;
+                
+                updateUI();
             });
 
-            // Manual Add (Palette)
-            els.btnAddManual.addEventListener('click', addManualPaletteColor);
-            els.manualInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addManualPaletteColor();
+            // Slide
+            els.btnShowSlide.addEventListener('click', () => {
+                updateSlideCompliance();
+                els.slideModal.classList.remove('hidden');
+            });
+            els.btnCloseSlide.addEventListener('click', () => els.slideModal.classList.add('hidden'));
+            els.slideModal.addEventListener('click', (e) => {
+                if(e.target === els.slideModal) els.slideModal.classList.add('hidden');
+            });
+            
+            // Download Slide
+            els.btnDownloadSlide.addEventListener('click', downloadSlide);
+        }
+
+        // --- Image Handling ---
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    els.uploadPlaceholder.classList.add('hidden');
+                    els.canvasContainer.classList.remove('hidden');
+                    els.pickerHint.classList.remove('opacity-0');
+                    els.fileInput.classList.add('hidden');
+                    els.btnResetImage.classList.remove('hidden');
+                    
+                    els.canvas.width = img.width;
+                    els.canvas.height = img.height;
+                    const ctx = els.canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetImage() {
+            els.fileInput.value = ''; 
+            els.fileInput.classList.remove('hidden'); 
+            els.btnResetImage.classList.add('hidden'); 
+            els.pickerHint.classList.add('opacity-0');
+            els.canvasContainer.classList.add('hidden');
+            els.uploadPlaceholder.classList.remove('hidden');
+            const ctx = els.canvas.getContext('2d');
+            ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
+        }
+
+        function handleCanvasClick(e) {
+            const rect = els.canvas.getBoundingClientRect();
+            const scaleX = els.canvas.width / rect.width;
+            const scaleY = els.canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            const ctx = els.canvas.getContext('2d');
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+            if (!state.palette.includes(hex)) {
+                state.palette.push(hex);
+                renderPalette();
+            }
+            handleSwatchClick(hex);
+        }
+
+        // --- Color Logic ---
+        
+        // Exposed Global for onclick
+        window.handleSwatchClick = function(hex) {
+            if (state.activeMode === 'bg') {
+                state.baseBg = hex;
+                els.bgLightness.value = 0;
+            } else {
+                state.baseText = hex;
+                els.textLightness.value = 0;
+            }
+            updateColor(state.activeMode, hex);
+        }
+
+        window.addToPalette = function(type) {
+            const hex = type === 'bg' ? state.bg : state.text;
+            if (!state.palette.includes(hex)) {
+                state.palette.push(hex);
+                renderPalette();
+            }
+        }
+
+        window.deleteSwatch = function(index) {
+            state.palette.splice(index, 1);
+            renderPalette();
+        }
+
+        function addManualPaletteColor() {
+            let hex = els.manualInput.value.trim();
+            if (!hex.startsWith('#')) hex = '#' + hex;
+            if (isValidHex(hex)) {
+                state.palette.push(hex);
+                renderPalette();
+                els.manualInput.value = '';
+                handleSwatchClick(hex);
+            }
+        }
+
+        function renderPalette() {
+            els.paletteGrid.innerHTML = '';
+            if (state.palette.length === 0) {
+                 els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
+                 return;
+            }
+            state.palette.forEach((hex, index) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'swatch-container relative w-full pt-[100%] rounded-lg cursor-pointer shadow-md border border-slate-700/50 overflow-hidden group hover:scale-105 transition-transform duration-200';
+                swatch.style.backgroundColor = hex;
+                swatch.addEventListener('click', (e) => {
+                    if(e.target.closest('.delete-btn')) return;
+                    handleSwatchClick(hex);
+                });
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn swatch-delete absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors z-10';
+                deleteBtn.innerHTML = '<i class="fa-solid fa-times text-[10px]"></i>';
+                deleteBtn.onclick = (e) => { e.stopPropagation(); deleteSwatch(index); };
+                swatch.appendChild(deleteBtn);
+                els.paletteGrid.appendChild(swatch);
             });
         }
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        // --- Visual Editor (Lightness) ---
+        function adjustLightness(type, amount) {
+            const baseHex = type === 'bg' ? state.baseBg : state.baseText;
+            const amt = parseInt(amount);
+            const rgb = hexToRgb(baseHex);
+            
+            // Brighten/Darken logic
+            const shift = amt * 5; 
+            const newR = clamp(rgb.r + shift);
+            const newG = clamp(rgb.g + shift);
+            const newB = clamp(rgb.b + shift);
+            
+            const newHex = rgbToHex(newR, newG, newB);
+            
+            // Set directly so text inputs update
+            state[type] = newHex;
+            updateUI(); 
+        }
+        
+        function clamp(num) {
+            return Math.min(Math.max(Math.round(num), 0), 255);
         }
 
-        // --- Format Logic (Hex/RGB) ---
+        // --- Core UI Updates ---
+
+        function updateColor(type, hex) {
+            state[type] = hex;
+            updateUI(type); // Pass type to avoid overwriting input while typing
+        }
+
+        function updateUI(skipInputType = null) {
+            // Pickers
+            els.bgPicker.value = state.bg;
+            els.textPicker.value = state.text;
+            
+            // Visuals
+            els.bgVisual.style.backgroundColor = state.bg;
+            els.textVisual.style.backgroundColor = state.text;
+
+            // Text Inputs
+            const getDisplayValue = (hex) => {
+                if (state.displayFormat === 'hex') return hex.toUpperCase();
+                const rgb = hexToRgb(hex);
+                return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+            };
+
+            // Force update if coming from slider (skipInputType is null)
+            if (skipInputType !== 'bg') els.bgText.value = getDisplayValue(state.bg);
+            if (skipInputType !== 'text') els.textText.value = getDisplayValue(state.text);
+
+            // Preview Card
+            els.card.style.backgroundColor = state.bg;
+            els.card.style.color = state.text;
+
+            // Slide Updates
+            els.slideContainer.style.backgroundColor = state.bg;
+            els.slideContainer.style.color = state.text;
+            els.slideBgVal.textContent = state.bg.toUpperCase();
+            els.slideTextVal.textContent = state.text.toUpperCase();
+            
+            // Math
+            const ratio = calculateContrastRatio(state.bg, state.text);
+            els.ratioDisplay.textContent = ratio.toFixed(2);
+            els.ratioDisplay.style.color = getRateColor(ratio);
+
+            updateBadges(ratio);
+        }
+
+        function updateSlideCompliance() {
+            const ratio = calculateContrastRatio(state.bg, state.text);
+            const check = '<i class="fa-solid fa-circle-check"></i>';
+            const xmark = '<i class="fa-solid fa-circle-xmark"></i>';
+            
+            const updateSlideBadge = (el, passed) => {
+                el.innerHTML = passed ? check : xmark;
+                // Since slide inherits color, we use opacity for subtle indication
+                el.style.opacity = passed ? '1' : '0.3'; 
+            };
+            
+            updateSlideBadge(els.slideBadges.aaNorm, ratio >= 4.5);
+            updateSlideBadge(els.slideBadges.aaaNorm, ratio >= 7.0);
+            updateSlideBadge(els.slideBadges.aaLarge, ratio >= 3.0);
+            updateSlideBadge(els.slideBadges.aaaLarge, ratio >= 4.5);
+        }
+
+        // --- Download ---
+        function downloadSlide() {
+            const btn = els.btnDownloadSlide;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing';
+            
+            html2canvas(els.slideContainer, {
+                scale: 2, // Retina quality
+                backgroundColor: null // Transparent logic handled by container
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `brandsafe-slide-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                
+                btn.innerHTML = originalText;
+            });
+        }
+
+        // --- Mode & Format ---
+        function setMode(mode) {
+            state.activeMode = mode;
+            if (mode === 'bg') {
+                els.controlBg.classList.add('mode-active');
+                els.controlBg.classList.remove('mode-inactive');
+                els.indicatorBg.classList.add('bg-blue-500');
+                els.indicatorBg.classList.remove('bg-slate-600');
+                els.controlText.classList.remove('mode-active');
+                els.controlText.classList.add('mode-inactive');
+                els.indicatorText.classList.remove('bg-blue-500');
+                els.indicatorText.classList.add('bg-slate-600');
+            } else {
+                els.controlText.classList.add('mode-active');
+                els.controlText.classList.remove('mode-inactive');
+                els.indicatorText.classList.add('bg-blue-500');
+                els.indicatorText.classList.remove('bg-slate-600');
+                els.controlBg.classList.remove('mode-active');
+                els.controlBg.classList.add('mode-inactive');
+                els.indicatorBg.classList.remove('bg-blue-500');
+                els.indicatorBg.classList.add('bg-slate-600');
+            }
+        }
+
         window.toggleFormat = function(fmt) {
             state.displayFormat = fmt;
-            
-            // Toggle visual buttons
             if (fmt === 'hex') {
                 els.fmtHex.classList.add('bg-slate-600', 'text-white');
                 els.fmtHex.classList.remove('text-slate-500');
@@ -443,276 +851,75 @@
                 els.fmtHex.classList.remove('bg-slate-600', 'text-white');
                 els.fmtHex.classList.add('text-slate-500');
             }
-            updateUI(); // Refresh text fields
+            updateUI();
         }
 
-        // --- Manual Input Logic ---
         function handleManualInput(type, value) {
-            // Trim spaces
             const cleanVal = value.trim();
-
             if (state.displayFormat === 'hex') {
-                // Check if valid hex
                 if (isValidHex(cleanVal)) {
-                    // Normalize to ensure hash
                     let hex = cleanVal;
                     if (!hex.startsWith('#')) hex = '#' + hex;
-                    // Update internal state only, skip refreshing this specific input to avoid cursor jumping
                     state[type] = hex;
+                    // Reset base color for lightness slider
+                    if(type === 'bg') state.baseBg = hex;
+                    if(type === 'text') state.baseText = hex;
                     updateUI(type); 
                 }
             } else {
-                // RGB Parsing "r, g, b"
                 const rgbParts = cleanVal.split(',').map(n => parseInt(n.trim()));
                 if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
                     const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
                     state[type] = hex;
+                     // Reset base color for lightness slider
+                    if(type === 'bg') state.baseBg = hex;
+                    if(type === 'text') state.baseText = hex;
                     updateUI(type);
                 }
             }
         }
 
-        // --- Mode Logic ---
-        function setMode(mode) {
-            state.activeMode = mode;
-            
-            if (mode === 'bg') {
-                els.controlBg.classList.add('mode-active');
-                els.controlBg.classList.remove('mode-inactive');
-                els.indicatorBg.classList.add('bg-blue-500');
-                els.indicatorBg.classList.remove('bg-slate-600');
-                
-                els.controlText.classList.remove('mode-active');
-                els.controlText.classList.add('mode-inactive');
-                els.indicatorText.classList.remove('bg-blue-500');
-                els.indicatorText.classList.add('bg-slate-600');
-            } else {
-                els.controlText.classList.add('mode-active');
-                els.controlText.classList.remove('mode-inactive');
-                els.indicatorText.classList.add('bg-blue-500');
-                els.indicatorText.classList.remove('bg-slate-600');
-                
-                els.controlBg.classList.remove('mode-active');
-                els.controlBg.classList.add('mode-inactive');
-                els.indicatorBg.classList.remove('bg-blue-500');
-                els.indicatorBg.classList.add('bg-slate-600');
-            }
-        }
-
-        // --- Palette Logic ---
-
-        window.handleSwatchClick = function(hex) {
-            updateColor(state.activeMode, hex);
-            
-            // Flash message
-            els.previewMsg.textContent = `${state.activeMode === 'bg' ? 'Background' : 'Text'} updated`;
-            els.previewMsg.style.opacity = '1';
-            setTimeout(() => els.previewMsg.style.opacity = '0', 1000);
-        }
-
-        window.deleteSwatch = function(index) {
-            state.palette.splice(index, 1);
-            renderPalette();
-        }
-
-        function addManualPaletteColor() {
-            let hex = els.manualInput.value.trim();
-            if (!hex.startsWith('#')) hex = '#' + hex;
-            
-            if (isValidHex(hex)) {
-                state.palette.push(hex);
-                renderPalette();
-                els.manualInput.value = '';
-                handleSwatchClick(hex);
-            } else {
-                alert('Please enter a valid Hex Code (e.g., #FF0000)');
-            }
-        }
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles({ target: { files: files } });
-        }
-
-        function handleFiles(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    els.imgPreview.src = event.target.result;
-                    els.imgContainer.classList.remove('hidden');
-                    
-                    els.imgPreview.onload = () => extractColors();
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function extractColors() {
-            try {
-                const dominantColor = colorThief.getColor(els.imgPreview);
-                const palette = colorThief.getPalette(els.imgPreview, 14);
-                
-                const rawColors = [dominantColor, ...palette];
-                
-                // Convert to hex and store in state
-                state.palette = rawColors.map(rgb => rgbToHex(rgb[0], rgb[1], rgb[2]));
-                
-                renderPalette();
-            } catch (err) {
-                console.error("Extraction failed", err);
-            }
-        }
-
-        function renderPalette() {
-            els.paletteGrid.innerHTML = '';
-            
-            if (state.palette.length === 0) {
-                 els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">No colors yet</div>`;
-                 return;
-            }
-
-            state.palette.forEach((hex, index) => {
-                const swatch = document.createElement('div');
-                // Main swatch container
-                swatch.className = 'swatch-container relative w-full pt-[100%] rounded-lg cursor-pointer shadow-md border border-slate-700/50 overflow-hidden group hover:scale-105 transition-transform duration-200';
-                swatch.style.backgroundColor = hex;
-                
-                // Click handler for the main area
-                swatch.addEventListener('click', (e) => {
-                    // Prevent triggering if we clicked the delete button
-                    if(e.target.closest('.delete-btn')) return;
-                    handleSwatchClick(hex);
-                });
-
-                // Delete Button Overlay
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn swatch-delete absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors z-10';
-                deleteBtn.innerHTML = '<i class="fa-solid fa-times text-[10px]"></i>';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteSwatch(index);
-                };
-
-                // Tooltip/Hex display on hover
-                const hexLabel = document.createElement('div');
-                hexLabel.className = 'absolute bottom-0 inset-x-0 bg-black/50 text-[9px] text-white text-center py-1 font-mono opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none';
-                hexLabel.innerText = hex;
-
-                swatch.appendChild(deleteBtn);
-                swatch.appendChild(hexLabel);
-                els.paletteGrid.appendChild(swatch);
-            });
-        }
-
-        // --- Core Logic ---
-
-        function updateColor(type, hex) {
-            state[type] = hex;
-            updateUI();
-        }
-
-        function updateUI(skipInputType = null) {
-            // Update Pickers (Always Hex)
-            els.bgPicker.value = state.bg;
-            els.textPicker.value = state.text;
-            
-            // Update Visuals
-            els.bgVisual.style.backgroundColor = state.bg;
-            els.textVisual.style.backgroundColor = state.text;
-
-            // Update Text Inputs (Hex or RGB)
-            const getDisplayValue = (hex) => {
-                if (state.displayFormat === 'hex') return hex.toUpperCase();
-                const rgb = hexToRgb(hex);
-                return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
-            };
-
-            // Only update the input value if the user isn't currently typing in it
-            if (skipInputType !== 'bg') els.bgText.value = getDisplayValue(state.bg);
-            if (skipInputType !== 'text') els.textText.value = getDisplayValue(state.text);
-
-            // Apply to Preview Card
-            els.card.style.backgroundColor = state.bg;
-            els.card.style.color = state.text;
-            
-            // Calculate Accessibility
-            const ratio = calculateContrastRatio(state.bg, state.text);
-            els.ratioDisplay.textContent = ratio.toFixed(2);
-            els.ratioDisplay.style.color = getRateColor(ratio);
-
-            updateBadges(ratio);
-        }
-
+        // --- Helpers ---
         function updateBadges(ratio) {
             const passIcon = '<i class="fa-solid fa-circle-check text-lg"></i>';
             const failIcon = '<i class="fa-solid fa-circle-xmark text-lg"></i>';
-
             const setBadge = (el, passed) => {
                 el.innerHTML = passed ? passIcon : failIcon;
-                el.className = passed ? 'text-green-500' : 'text-red-500';
+                el.className = passed ? 'text-green-500 shrink-0' : 'text-red-500 shrink-0';
             };
-
             setBadge(els.badges.aaNorm, ratio >= 4.5);
             setBadge(els.badges.aaaNorm, ratio >= 7.0);
             setBadge(els.badges.aaLarge, ratio >= 3.0);
             setBadge(els.badges.aaaLarge, ratio >= 4.5);
         }
-
         function getRateColor(ratio) {
-            if (ratio >= 7) return '#4ade80'; // green-400
-            if (ratio >= 4.5) return '#facc15'; // yellow-400
-            if (ratio >= 3) return '#fb923c'; // orange-400
-            return '#f87171'; // red-400
+            if (ratio >= 7) return '#4ade80'; 
+            if (ratio >= 4.5) return '#facc15'; 
+            if (ratio >= 3) return '#fb923c'; 
+            return '#f87171'; 
         }
-
-        // --- Math & Helpers ---
-
-        function isValidHex(hex) {
-            return /^#?[0-9A-F]{6}$/i.test(hex);
-        }
-
-        function rgbToHex(r, g, b) {
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-
+        function isValidHex(hex) { return /^#?[0-9A-F]{6}$/i.test(hex); }
+        function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : { r: 0, g: 0, b: 0 };
+            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 0, g: 0, b: 0 };
         }
-
-        // WCAG Relative Luminance Formula
         function getLuminance(r, g, b) {
-            const a = [r, g, b].map(function(v) {
-                v /= 255;
-                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-            });
+            const a = [r, g, b].map(function(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
             return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
         }
-
         function calculateContrastRatio(hex1, hex2) {
             const rgb1 = hexToRgb(hex1);
             const rgb2 = hexToRgb(hex2);
-
             if (!rgb1 || !rgb2) return 1;
-
             const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
             const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-
             const bright = Math.max(lum1, lum2);
             const dark = Math.min(lum1, lum2);
-
             return (bright + 0.05) / (dark + 0.05);
         }
 
-        // Initialize App
         window.addEventListener('DOMContentLoaded', init);
-
     </script>
 </body>
 </html>
