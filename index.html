@@ -831,7 +831,9 @@
                 state.baseText = hex;
                 els.textLightness.value = 0;
             }
-            updateColor(state.activeMode, hex);
+            // Explicitly update state and UI without skipping inputs
+            state[state.activeMode] = hex;
+            updateUI(); 
         }
 
         window.addToPalette = function(type) {
@@ -900,7 +902,7 @@
         // --- Core UI Updates ---
         function updateColor(type, hex) {
             state[type] = hex;
-            updateUI(type); 
+            updateUI(); 
         }
 
         function updateUI(skipInputType = null) {
@@ -1012,6 +1014,7 @@
                     let hex = cleanVal;
                     if (!hex.startsWith('#')) hex = '#' + hex;
                     state[type] = hex;
+                    // Reset base color for lightness slider
                     if(type === 'bg') state.baseBg = hex;
                     if(type === 'text') state.baseText = hex;
                     updateUI(type); 
@@ -1021,6 +1024,7 @@
                 if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
                     const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
                     state[type] = hex;
+                     // Reset base color for lightness slider
                     if(type === 'bg') state.baseBg = hex;
                     if(type === 'text') state.baseText = hex;
                     updateUI(type);
