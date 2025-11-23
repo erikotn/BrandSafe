@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrandSafe | Design Workbench</title>
     
-    <!-- Fonts -->
+    <!-- Fonts (Inter as Default) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link id="dynamic-font-link" rel="stylesheet" href=""> <!-- Placeholder for dynamic fonts -->
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -369,8 +370,8 @@
     <!-- SLIDE PRESENTATION MODAL -->
     <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
         
-        <!-- Controls overlay -->
-        <div class="absolute top-4 right-4 flex gap-3">
+        <!-- Controls overlay (Top Right) -->
+        <div class="absolute top-4 right-4 flex gap-3 z-50">
              <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
                 <i class="fa-solid fa-download"></i> Download PNG
             </button>
@@ -379,60 +380,86 @@
             </button>
         </div>
 
+        <!-- Controls overlay (Top Left) -->
+        <div class="absolute top-4 left-4 z-50 flex gap-2 items-center bg-agency-800/80 backdrop-blur p-2 rounded-lg border border-agency-700">
+            <label class="text-xs text-slate-400 font-bold px-2">FONT:</label>
+            <input list="google-fonts-list" id="font-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-sm text-white w-48 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Search Google Fonts...">
+            <datalist id="google-fonts-list">
+                <!-- Populated via JS -->
+            </datalist>
+        </div>
+
         <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
             <!-- Slide Content -->
-            <div class="flex-1 p-16 md:p-24 flex flex-col justify-center gap-8 relative z-10">
-                <div class="w-20 h-2 bg-current opacity-30 rounded-full mb-4"></div>
+            <div class="flex-1 px-16 py-12 md:px-24 md:py-16 flex flex-col justify-center gap-8 relative z-10">
                 
-                <!-- Dutch Translated Content -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] max-w-4xl">
-                    Huisstijl.
-                </h1>
-                <p class="text-2xl md:text-3xl opacity-80 font-light max-w-2xl leading-relaxed">
-                    Deze kleurcombinatie voldoet aan de WCAG-toegankelijkheidsnormen voor digitaal gebruik.
-                </p>
-                
-                <div class="mt-8 flex flex-col md:flex-row gap-12 opacity-80">
-                     <!-- Colors -->
-                     <div class="flex gap-8 items-center">
-                         <div class="flex flex-col">
-                            <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Achtergrond</span>
-                            <span class="font-mono text-xl" id="slide-bg-val">#1E293B</span>
-                         </div>
-                         <div class="w-px h-10 bg-current opacity-30"></div>
-                         <div class="flex flex-col">
-                            <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Typografie</span>
-                            <span class="font-mono text-xl" id="slide-text-val">#FFFFFF</span>
-                         </div>
-                     </div>
+                <!-- Brand Title Section -->
+                <div class="border-b border-current border-opacity-20 pb-8 mb-4">
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-2">
+                        Huisstijl.
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-60 font-light">
+                        WCAG Validatie & Kleurpalet
+                    </p>
+                </div>
 
-                     <!-- Compliance Table on Slide -->
-                     <div class="flex flex-col gap-2 border-l border-current border-opacity-30 pl-12">
-                         <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-60">Validatie</span>
-                         <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-sm font-medium">
-                             <div class="flex items-center gap-2">
-                                 <span id="slide-aa-norm" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
-                                 <span>Normaal AA</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    
+                    <!-- Left Column: Colors -->
+                    <div class="flex flex-col gap-8 justify-center">
+                        <div class="flex gap-8 items-center">
+                             <div class="flex flex-col">
+                                <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-50">Achtergrond</span>
+                                <span class="font-mono text-2xl" id="slide-bg-val">#1E293B</span>
                              </div>
-                             <div class="flex items-center gap-2">
-                                 <span id="slide-aaa-norm" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
-                                 <span>Normaal AAA</span>
+                             <div class="w-px h-12 bg-current opacity-20"></div>
+                             <div class="flex flex-col">
+                                <span class="text-xs uppercase tracking-widest font-bold mb-1 opacity-50">Typografie</span>
+                                <span class="font-mono text-2xl" id="slide-text-val">#FFFFFF</span>
                              </div>
-                             <div class="flex items-center gap-2">
-                                 <span id="slide-aa-large" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
-                                 <span>Groot AA</span>
-                             </div>
-                             <div class="flex items-center gap-2">
-                                 <span id="slide-aaa-large" class="text-current opacity-50"><i class="fa-solid fa-circle"></i></span>
-                                 <span>Groot AAA</span>
-                             </div>
-                         </div>
-                     </div>
+                        </div>
+                        <div class="text-xs opacity-50 max-w-xs leading-relaxed">
+                            Dit document bevestigt dat de gekozen kleurencombinatie voldoet aan de onderstaande toegankelijkheidsnormen.
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Lorem Ipsum Checks -->
+                    <div class="flex flex-col gap-8 border-l border-current border-opacity-20 pl-12 justify-center">
+                        
+                        <!-- Large Text Check -->
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="text-[10px] uppercase tracking-widest font-bold opacity-50">Grote Tekst (Koppen)</span>
+                                <div class="flex gap-2 text-sm">
+                                    <div class="flex items-center gap-1 opacity-50" id="slide-badge-aa-large"><i class="fa-solid fa-circle"></i> AA</div>
+                                    <div class="flex items-center gap-1 opacity-50" id="slide-badge-aaa-large"><i class="fa-solid fa-circle"></i> AAA</div>
+                                </div>
+                            </div>
+                            <p class="text-3xl md:text-4xl font-bold leading-tight">
+                                Lorem ipsum dolor sit amet.
+                            </p>
+                        </div>
+
+                        <!-- Normal Text Check -->
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="text-[10px] uppercase tracking-widest font-bold opacity-50">Normale Tekst (Broodtekst)</span>
+                                <div class="flex gap-2 text-sm">
+                                    <div class="flex items-center gap-1 opacity-50" id="slide-badge-aa-norm"><i class="fa-solid fa-circle"></i> AA</div>
+                                    <div class="flex items-center gap-1 opacity-50" id="slide-badge-aaa-norm"><i class="fa-solid fa-circle"></i> AAA</div>
+                                </div>
+                            </div>
+                            <p class="text-base md:text-lg leading-relaxed opacity-90 max-w-md">
+                                Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
             </div>
             
             <!-- Decorators -->
-            <div class="absolute bottom-0 right-0 p-12 opacity-10 pointer-events-none">
+            <div class="absolute bottom-0 right-0 p-12 opacity-5 pointer-events-none">
                 <i class="fa-solid fa-universal-access text-9xl"></i>
             </div>
         </div>
@@ -447,10 +474,29 @@
             activeMode: 'bg',
             displayFormat: 'hex',
             palette: [],
-            // Store original values before lightness adjustment
             baseBg: '#1e293b',
-            baseText: '#ffffff'
+            baseText: '#ffffff',
+            currentFont: 'Inter'
         };
+
+        // --- Top 300 Google Fonts List for Datalist ---
+        const popularGoogleFonts = [
+            "Roboto", "Open Sans", "Noto Sans JP", "Lato", "Montserrat", "Roboto Condensed", "Source Sans Pro", "Oswald", "Poppins", 
+            "Roboto Mono", "Raleway", "Noto Sans", "PT Sans", "Mukta", "Merriweather", "Roboto Slab", "Nunito", "Playfair Display", 
+            "Rubik", "Lora", "Work Sans", "Nunito Sans", "Fira Sans", "Quicksand", "Barlow", "Inconsolata", "Inter", "Titillium Web", 
+            "PT Serif", "Heebo", "Libre Franklin", "DM Sans", "Arimo", "Karla", "Josefin Sans", "Mulish", "Libre Baskerville", 
+            "Ubuntu", "PT Sans Narrow", "Oxygen", "Bebas Neue", "Bitter", "Cabin", "Dancing Script", "Source Code Pro", "Abel", 
+            "Prompt", "Varela Round", "Exo 2", "Anton", "Maven Pro", "Hind", "Fjalla One", "Crimson Text", "Pacifico", "Lobster", 
+            "Yanone Kaffeesatz", "Comfortaa", "Arvo", "Noto Serif", "Slabo 27px", "Merriweather Sans", "Asap", "Signika", 
+            "Archivo Narrow", "Inconsolata", "Questrial", "Catamaran", "Cairo", "Amatic SC", "Cuprum", "Muli", "Frank Ruhl Libre", 
+            "Barlow Condensed", "Play", "Pathway Gothic One", "Rokkitt", "Alegreya", "Exo", "EB Garamond", "Righteous", "Crete Round", 
+            "Overpass", "Old Standard TT", "Cinzel", "Domine", "Changa", "Rajdhani", "Cormorant Garamond", "Kanit", "Teko", 
+            "Source Serif Pro", "Permanent Marker", "Bree Serif", "Vollkorn", "Patua One", "Abril Fatface", "Cookie", "Francois One", 
+            "Russo One", "Acme", "Alegreya Sans", "Chivo", "Alfa Slab One", "Didact Gothic", "Great Vibes", "Amaranth", "Philosopher", 
+            "Satisfy", "Courgette", "Quattrocento Sans", "Gloria Hallelujah", "News Cycle", "Glegoo", "Saira Condensed", 
+            "Cardo", "Fredoka One", "Pathway Gothic One", "Jura", "Orbitron", "Kalam", "Volkhov", "Sacramento", "Prata", 
+            "Yellowtail", "Poiret One", "Monoton", "Kaushan Script", "Marck Script"
+        ];
 
         // --- Elements ---
         const els = {
@@ -512,12 +558,17 @@
             slideContainer: document.getElementById('slide-container'),
             slideBgVal: document.getElementById('slide-bg-val'),
             slideTextVal: document.getElementById('slide-text-val'),
+            // Slide Badges (Updated IDs)
             slideBadges: {
-                aaNorm: document.getElementById('slide-aa-norm'),
-                aaaNorm: document.getElementById('slide-aaa-norm'),
-                aaLarge: document.getElementById('slide-aa-large'),
-                aaaLarge: document.getElementById('slide-aaa-large'),
-            }
+                aaNorm: document.getElementById('slide-badge-aa-norm'),
+                aaaNorm: document.getElementById('slide-badge-aaa-norm'),
+                aaLarge: document.getElementById('slide-badge-aa-large'),
+                aaaLarge: document.getElementById('slide-badge-aaa-large'),
+            },
+            // Font Controls
+            fontInput: document.getElementById('font-input'),
+            fontsDatalist: document.getElementById('google-fonts-list'),
+            dynamicFontLink: document.getElementById('dynamic-font-link')
         };
 
         // --- Init ---
@@ -525,6 +576,20 @@
             setMode('bg');
             updateUI();
             setupEvents();
+            setupFonts();
+        }
+
+        function setupFonts() {
+            // Populate Datalist
+            els.fontsDatalist.innerHTML = popularGoogleFonts.map(f => `<option value="${f}">`).join('');
+            
+            // Load saved font
+            const savedFont = localStorage.getItem('brandSafe_font');
+            if (savedFont) {
+                state.currentFont = savedFont;
+                els.fontInput.value = savedFont;
+                loadGoogleFont(savedFont);
+            }
         }
 
         // --- Event Listeners ---
@@ -592,6 +657,28 @@
             
             // Download Slide
             els.btnDownloadSlide.addEventListener('click', downloadSlide);
+
+            // Font Input
+            els.fontInput.addEventListener('change', (e) => {
+                const fontName = e.target.value;
+                if(fontName) {
+                    loadGoogleFont(fontName);
+                    localStorage.setItem('brandSafe_font', fontName);
+                }
+            });
+        }
+
+        // --- Font Logic ---
+        function loadGoogleFont(fontName) {
+            // Basic validation
+            if(!fontName) return;
+            
+            const url = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;700;800&display=swap`;
+            els.dynamicFontLink.href = url;
+            state.currentFont = fontName;
+            
+            // Apply font to slide container
+            els.slideContainer.style.fontFamily = `"${fontName}", sans-serif`;
         }
 
         // --- Image Handling ---
@@ -650,8 +737,6 @@
         }
 
         // --- Color Logic ---
-        
-        // Exposed Global for onclick
         window.handleSwatchClick = function(hex) {
             if (state.activeMode === 'bg') {
                 state.baseBg = hex;
@@ -716,7 +801,6 @@
             const amt = parseInt(amount);
             const rgb = hexToRgb(baseHex);
             
-            // Brighten/Darken logic
             const shift = amt * 5; 
             const newR = clamp(rgb.r + shift);
             const newG = clamp(rgb.g + shift);
@@ -724,7 +808,6 @@
             
             const newHex = rgbToHex(newR, newG, newB);
             
-            // Set directly so text inputs update
             state[type] = newHex;
             updateUI(); 
         }
@@ -734,10 +817,9 @@
         }
 
         // --- Core UI Updates ---
-
         function updateColor(type, hex) {
             state[type] = hex;
-            updateUI(type); // Pass type to avoid overwriting input while typing
+            updateUI(type); 
         }
 
         function updateUI(skipInputType = null) {
@@ -756,7 +838,6 @@
                 return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
             };
 
-            // Force update if coming from slider (skipInputType is null)
             if (skipInputType !== 'bg') els.bgText.value = getDisplayValue(state.bg);
             if (skipInputType !== 'text') els.textText.value = getDisplayValue(state.text);
 
@@ -780,13 +861,12 @@
 
         function updateSlideCompliance() {
             const ratio = calculateContrastRatio(state.bg, state.text);
-            const check = '<i class="fa-solid fa-circle-check"></i>';
-            const xmark = '<i class="fa-solid fa-circle-xmark"></i>';
+            const check = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            const xmark = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
             
             const updateSlideBadge = (el, passed) => {
                 el.innerHTML = passed ? check : xmark;
-                // Since slide inherits color, we use opacity for subtle indication
-                el.style.opacity = passed ? '1' : '0.3'; 
+                el.parentElement.style.opacity = passed ? '1' : '0.3'; 
             };
             
             updateSlideBadge(els.slideBadges.aaNorm, ratio >= 4.5);
@@ -802,8 +882,9 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing';
             
             html2canvas(els.slideContainer, {
-                scale: 2, // Retina quality
-                backgroundColor: null // Transparent logic handled by container
+                scale: 2, 
+                backgroundColor: null,
+                useCORS: true // Vital for external fonts
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `brandsafe-slide-${Date.now()}.png`;
