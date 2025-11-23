@@ -126,26 +126,23 @@
             aspect-ratio: 16 / 9;
         }
 
-        /* High Visibility Badge Style on Slide */
+        /* Clean Badge Style (No Pills) */
         .slide-badge {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: 8px;
-            /* Increased visibility for export */
-            background-color: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.2);
             font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap; /* Prevents wrapping/dropping out */
-            min-width: 80px; /* Forces minimum width */
+            font-size: 1rem;
+            white-space: nowrap;
         }
         .slide-badge i {
-            font-size: 1.2rem;
-            /* Ensure colors pop */
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); 
+            font-size: 1.25rem; /* Larger icons */
+            margin-right: 6px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); 
+        }
+        .slide-badge span {
+            opacity: 0.9;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
@@ -427,8 +424,7 @@
                 <!-- Top Section: Titles, Colors, Icon -->
                 <div class="flex justify-between items-end mb-8">
                     <!-- Left: Titles -->
-                    <div class="flex flex-col justify-center gap-2"> <!-- Increased Gap -->
-                        <!-- Removed leading-none, added Margin Bottom for safety -->
+                    <div class="flex flex-col justify-center gap-2"> 
                         <h1 id="slide-main-title" class="text-5xl md:text-6xl font-bold tracking-tighter mb-4">
                             Huisstijl.
                         </h1>
@@ -465,9 +461,12 @@
                     <!-- Left Column: Large Text -->
                     <div class="flex flex-col gap-6">
                         <!-- Header for Column -->
-                        <div class="flex justify-between items-center border-b border-current border-opacity-10 pb-3">
-                            <span class="text-xs uppercase tracking-widest font-bold opacity-50 font-sans">Grote teksten (koppen)</span>
-                            <div class="flex gap-2">
+                        <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Grote tekst</span>
+                                <span id="slide-font-name-header" class="text-xs font-medium opacity-70 font-sans">Inter</span>
+                            </div>
+                            <div class="flex gap-3 mb-1">
                                 <div id="slide-badge-aa-large" class="slide-badge"></div>
                                 <div id="slide-badge-aaa-large" class="slide-badge"></div>
                             </div>
@@ -484,9 +483,12 @@
                     <!-- Right Column: Normal Text -->
                     <div class="flex flex-col gap-6">
                         <!-- Header for Column -->
-                        <div class="flex justify-between items-center border-b border-current border-opacity-10 pb-3">
-                            <span class="text-xs uppercase tracking-widest font-bold opacity-50 font-sans">Normale tekst (broodtekst)</span>
-                            <div class="flex gap-2">
+                        <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Normale tekst</span>
+                                <span id="slide-font-name-body" class="text-xs font-medium opacity-70 font-sans">Inter</span>
+                            </div>
+                            <div class="flex gap-3 mb-1">
                                 <div id="slide-badge-aa-norm" class="slide-badge"></div>
                                 <div id="slide-badge-aaa-norm" class="slide-badge"></div>
                             </div>
@@ -608,6 +610,9 @@
                 aaLarge: document.getElementById('slide-badge-aa-large'),
                 aaaLarge: document.getElementById('slide-badge-aaa-large'),
             },
+            slideFontNameHeader: document.getElementById('slide-font-name-header'),
+            slideFontNameBody: document.getElementById('slide-font-name-body'),
+            
             // Font Controls
             fontHeaderInput: document.getElementById('font-header-input'),
             fontBodyInput: document.getElementById('font-body-input'),
@@ -622,6 +627,10 @@
             updateUI();
             setupEvents();
             setupFonts();
+            
+            // Set default font names if not loaded from storage
+            if (els.slideFontNameHeader.textContent === '') els.slideFontNameHeader.textContent = state.headerFont;
+            if (els.slideFontNameBody.textContent === '') els.slideFontNameBody.textContent = state.bodyFont;
         }
 
         function setupFonts() {
@@ -743,10 +752,12 @@
                     state.headerFont = fontName;
                     els.slideMainTitle.style.fontFamily = `"${fontName}", sans-serif`;
                     els.slideExampleHeader.style.fontFamily = `"${fontName}", sans-serif`;
+                    els.slideFontNameHeader.textContent = fontName; // Update slide label
                 } else {
                     state.bodyFont = fontName;
                     els.slideSubtitle.style.fontFamily = `"${fontName}", sans-serif`;
                     els.slideExampleBody.style.fontFamily = `"${fontName}", sans-serif`;
+                    els.slideFontNameBody.textContent = fontName; // Update slide label
                 }
                 input.classList.remove('border-yellow-500');
                 input.classList.add('border-green-500');
@@ -925,14 +936,13 @@
         function updateSlideCompliance() {
             const ratio = calculateContrastRatio(state.bg, state.text);
             
-            // High Visibility Icons (Green Check / Red X)
-            const pass = '<i class="fa-solid fa-check text-green-500"></i>';
-            const fail = '<i class="fa-solid fa-xmark text-red-500"></i>';
+            // High Visibility Icons (Green Check / Red X) - Simple Circles
+            const pass = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            const fail = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
             
             const updateBadge = (el, passed, label) => {
-                el.innerHTML = `${passed ? pass : fail} ${label}`;
-                // Removed opacity shift for failure, keep it bright to show "X" clearly.
-                el.style.opacity = '1'; 
+                el.innerHTML = `${passed ? pass : fail} <span>${label}</span>`;
+                el.style.opacity = passed ? '1' : '0.5'; 
             };
             
             updateBadge(els.slideBadges.aaNorm, ratio >= 4.5, 'AA');
