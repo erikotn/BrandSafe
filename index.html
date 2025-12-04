@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,24 +42,12 @@
 
     <style>
         /* Custom Utilities */
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
+        body { background-color: #0f172a; color: #f8fafc; }
 
         /* Swatch Interactions */
-        .swatch-delete {
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .swatch-container:hover .swatch-delete {
-            opacity: 1;
-        }
-
-        .swatch-container:active {
-            transform: scale(0.95);
-        }
+        .swatch-delete { opacity: 0; transition: opacity 0.2s ease; }
+        .swatch-container:hover .swatch-delete { opacity: 1; }
+        .swatch-container:active { transform: scale(0.95); }
 
         /* Color input styling override */
         input[type="color"] {
@@ -73,21 +60,11 @@
             border-radius: 50%;
             cursor: pointer;
         }
-
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-
-        input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 50%;
-            border: 1px solid #475569;
-        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; border: 1px solid #475569; }
 
         /* Smooth transitions */
-        .transition-colors-fast {
-            transition: color 0.1s, background-color 0.1s, border-color 0.1s;
-        }
+        .transition-colors-fast { transition: color 0.1s, background-color 0.1s, border-color 0.1s; }
 
         /* Active Mode Indicator Animation */
         .mode-active {
@@ -95,45 +72,28 @@
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
             background-color: rgba(30, 41, 59, 1);
         }
-
         .mode-inactive {
             opacity: 0.7;
         }
-
         .mode-inactive:hover {
             opacity: 1;
             background-color: rgba(30, 41, 59, 0.8);
         }
 
         /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
 
         /* Crosshair cursor for image picker */
-        .cursor-crosshair {
-            cursor: crosshair;
-        }
+        .cursor-crosshair { cursor: crosshair; }
 
         /* Range Slider Styling */
         input[type=range] {
-            -webkit-appearance: none;
-            background: transparent;
+            -webkit-appearance: none; 
+            background: transparent; 
         }
-
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 12px;
@@ -141,9 +101,8 @@
             border-radius: 50%;
             background: #3b82f6;
             cursor: pointer;
-            margin-top: -5px;
+            margin-top: -5px; 
         }
-
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 2px;
@@ -170,14 +129,11 @@
             font-size: 1rem;
             white-space: nowrap;
         }
-
         .slide-badge i {
-            font-size: 1.25rem;
-            /* Larger icons */
+            font-size: 1.25rem; /* Larger icons */
             margin-right: 6px;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); 
         }
-
         .slide-badge span {
             opacity: 0.9;
             font-size: 0.85rem;
@@ -185,7 +141,6 @@
         }
     </style>
 </head>
-
 <body class="h-screen flex flex-col overflow-hidden text-slate-200">
 
     <header class="border-b border-agency-700 bg-agency-900/95 backdrop-blur px-6 py-4 flex justify-between items-center z-10 shrink-0">
@@ -215,9 +170,9 @@
                     </div>
 
                     <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 text-center transition cursor-pointer group min-h-[200px] flex flex-col items-center justify-center overflow-hidden">
-
+                        
                         <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-
+                        
                         <div id="upload-placeholder" class="pointer-events-none p-8">
                             <i class="fa-solid fa-eye-dropper text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
                             <p class="text-sm font-medium text-slate-300">Upload Image</p>
@@ -235,7 +190,7 @@
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">2. Palette</h2>
                         <button id="clear-palette" class="text-[10px] text-slate-500 hover:text-red-400 underline">Clear All</button>
                     </div>
-
+                    
                     <div class="flex flex-wrap gap-2 mb-4">
                         <button onclick="handleSwatchClick('#000000')" class="w-10 h-10 rounded-lg bg-black border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure Black">
                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 text-white rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
@@ -275,7 +230,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+                        
                         <div id="control-bg" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-active">
                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('bg')"></div>
 
@@ -402,7 +357,7 @@
     </main>
 
     <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
-
+        
         <div class="absolute top-4 right-4 flex gap-3 z-50">
             <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
                 <i class="fa-solid fa-download"></i> Download PNG
@@ -427,9 +382,9 @@
 
         <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
             <div class="flex-1 px-16 py-12 md:px-20 md:py-16 flex flex-col justify-center relative z-10">
-
+                
                 <div class="flex justify-between items-end mb-8">
-                    <div class="flex flex-col justify-center gap-2">
+                    <div class="flex flex-col justify-center gap-2"> 
                         <h1 id="slide-main-title" class="text-5xl md:text-6xl font-bold tracking-tighter mb-4">
                             Huisstijl.
                         </h1>
@@ -458,7 +413,7 @@
                 <div class="w-full h-px bg-current opacity-20 mb-10"></div>
 
                 <div class="flex-1 grid grid-cols-[1fr_auto_1fr] gap-12 items-start">
-
+                    
                     <div class="flex flex-col gap-6">
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
@@ -499,606 +454,608 @@
     </div>
 
     <script>
-        // --- State ---
-        const state = {
-            bg: '#1e293b',
-            text: '#ffffff',
-            activeMode: 'bg',
-            displayFormat: 'hex',
-            palette: [],
-            baseBg: '#1e293b',
-            baseText: '#ffffff',
-            headerFont: 'Inter',
-            bodyFont: 'Inter'
+    // --- State ---
+    const state = {
+        bg: '#1e293b',
+        text: '#ffffff',
+        activeMode: 'bg',
+        displayFormat: 'hex',
+        palette: [],
+        baseBg: '#1e293b',
+        baseText: '#ffffff',
+        headerFont: 'Inter',
+        bodyFont: 'Inter'
+    };
+
+    // --- Font Lists ---
+    const systemFonts = [
+        "Arial", "Helvetica", "Verdana", "Times New Roman", "Courier New", 
+        "Georgia", "Palatino", "Garamond", "Bookman", "Comic Sans MS", 
+        "Trebuchet MS", "Arial Black", "Impact", "Tahoma", "Geneva"
+    ].sort();
+
+    const popularGoogleFonts = [
+        "Bricolage Grotesque", "Inter", "Roboto", "Open Sans", "Noto Sans JP", "Lato", "Montserrat", "Roboto Condensed", "Source Sans Pro", "Oswald", "Poppins", 
+        "Roboto Mono", "Raleway", "Noto Sans", "PT Sans", "Mukta", "Merriweather", "Roboto Slab", "Nunito", "Playfair Display", 
+        "Rubik", "Lora", "Work Sans", "Nunito Sans", "Fira Sans", "Quicksand", "Barlow", "Inconsolata", "Titillium Web", 
+        "PT Serif", "Heebo", "Libre Franklin", "DM Sans", "Arimo", "Karla", "Josefin Sans", "Mulish", "Libre Baskerville", 
+        "Ubuntu", "PT Sans Narrow", "Oxygen", "Bebas Neue", "Bitter", "Cabin", "Dancing Script", "Source Code Pro", "Abel", 
+        "Prompt", "Varela Round", "Exo 2", "Anton", "Maven Pro", "Hind", "Fjalla One", "Crimson Text", "Pacifico", "Lobster", 
+        "Yanone Kaffeesatz", "Comfortaa", "Arvo", "Noto Serif", "Slabo 27px", "Merriweather Sans", "Asap", "Signika", 
+        "Archivo Narrow", "Questrial", "Catamaran", "Cairo", "Amatic SC", "Cuprum", "Muli", "Frank Ruhl Libre", 
+        "Barlow Condensed", "Play", "Pathway Gothic One", "Rokkitt", "Alegreya", "Exo", "EB Garamond", "Righteous", "Crete Round", 
+        "Overpass", "Old Standard TT", "Cinzel", "Domine", "Changa", "Rajdhani", "Cormorant Garamond", "Kanit", "Teko", 
+        "Source Serif Pro", "Permanent Marker", "Bree Serif", "Vollkorn", "Patua One", "Abril Fatface", "Cookie", "Francois One", 
+        "Russo One", "Acme", "Alegreya Sans", "Chivo", "Alfa Slab One", "Didact Gothic", "Great Vibes", "Amaranth", "Philosopher", 
+        "Satisfy", "Courgette", "Quattrocento Sans", "Gloria Hallelujah", "News Cycle", "Glegoo", "Saira Condensed", 
+        "Cardo", "Fredoka One", "Jura", "Orbitron", "Kalam", "Volkhov", "Sacramento", "Prata", 
+        "Yellowtail", "Poiret One", "Monoton", "Kaushan Script", "Marck Script", "Space Grotesk", "Syne", "Outfit", "Epilogue", 
+        "Manrope", "Urbanist", "Be Vietnam Pro", "Plus Jakarta Sans", "Lexend", "Sora", "JetBrains Mono"
+    ].sort();
+
+    // --- Elements ---
+    const els = {
+        // Left Panel
+        fileInput: document.getElementById('file-input'),
+        dropZone: document.getElementById('drop-zone'),
+        uploadPlaceholder: document.getElementById('upload-placeholder'),
+        canvasContainer: document.getElementById('canvas-container'),
+        canvas: document.getElementById('img-canvas'),
+        pickerHint: document.getElementById('picker-hint'),
+        paletteGrid: document.getElementById('palette-grid'),
+        manualInput: document.getElementById('manual-hex-input'),
+        btnAddManual: document.getElementById('btn-add-manual'),
+        btnClearPalette: document.getElementById('clear-palette'),
+        btnResetImage: document.getElementById('btn-reset-image'),
+
+        // Format
+        fmtHex: document.getElementById('fmt-hex'),
+        fmtRgb: document.getElementById('fmt-rgb'),
+
+        // Controls
+        controlBg: document.getElementById('control-bg'),
+        controlText: document.getElementById('control-text'),
+        indicatorBg: document.getElementById('indicator-bg'),
+        indicatorText: document.getElementById('indicator-text'),
+        
+        // Inputs
+        bgPicker: document.getElementById('bg-picker'),
+        bgText: document.getElementById('bg-text'),
+        bgLightness: document.getElementById('bg-lightness'),
+        
+        textPicker: document.getElementById('text-picker'),
+        textText: document.getElementById('text-text'),
+        textLightness: document.getElementById('text-lightness'),
+
+        btnSwap: document.getElementById('btn-swap'),
+        
+        // Visuals
+        bgVisual: document.getElementById('bg-visual-indicator'),
+        textVisual: document.getElementById('text-visual-indicator'),
+        
+        // Preview
+        card: document.getElementById('preview-card'),
+        
+        // Scoreboard
+        ratioDisplay: document.getElementById('contrast-ratio'),
+        badges: {
+            aaNorm: document.getElementById('badge-aa-normal'),
+            aaaNorm: document.getElementById('badge-aaa-normal'),
+            aaLarge: document.getElementById('badge-aa-large'),
+            aaaLarge: document.getElementById('badge-aaa-large'),
+        },
+
+        // Slide
+        btnShowSlide: document.getElementById('btn-show-slide'),
+        slideModal: document.getElementById('slide-modal'),
+        btnCloseSlide: document.getElementById('close-slide'),
+        btnDownloadSlide: document.getElementById('download-slide'),
+        slideContainer: document.getElementById('slide-container'),
+        slideBgVal: document.getElementById('slide-bg-val'),
+        slideTextVal: document.getElementById('slide-text-val'),
+        // Slide Elements
+        slideMainTitle: document.getElementById('slide-main-title'),
+        slideSubtitle: document.getElementById('slide-subtitle'),
+        slideExampleHeader: document.getElementById('slide-example-header'),
+        slideExampleBody: document.getElementById('slide-example-body'),
+        slideBadges: {
+            aaNorm: document.getElementById('slide-badge-aa-norm'),
+            aaaNorm: document.getElementById('slide-badge-aaa-norm'),
+            aaLarge: document.getElementById('slide-badge-aa-large'),
+            aaaLarge: document.getElementById('slide-badge-aaa-large'),
+        },
+        slideFontNameHeader: document.getElementById('slide-font-name-header'),
+        slideFontNameBody: document.getElementById('slide-font-name-body'),
+        
+        // Font Controls
+        fontHeaderInput: document.getElementById('font-header-input'),
+        fontBodyInput: document.getElementById('font-body-input'),
+        fontsDatalist: document.getElementById('google-fonts-list'),
+        headerFontLink: document.getElementById('header-font-link'),
+        bodyFontLink: document.getElementById('body-font-link')
+    };
+
+    // --- Init ---
+    function init() {
+        setMode('bg');
+        updateUI();
+        setupEvents();
+        setupFonts();
+        
+        // Set default font names if not loaded from storage
+        if (els.slideFontNameHeader.textContent === '') els.slideFontNameHeader.textContent = state.headerFont;
+        if (els.slideFontNameBody.textContent === '') els.slideFontNameBody.textContent = state.bodyFont;
+    }
+
+    function setupFonts() {
+        // Populate Datalist with BOTH System and Google Fonts
+        let options = '';
+        
+        // Add System Fonts Group
+        systemFonts.forEach(f => {
+            options += `<option value="${f}">System Font</option>`;
+        });
+        
+        // Add Google Fonts Group
+        popularGoogleFonts.forEach(f => {
+            options += `<option value="${f}">Google Font</option>`;
+        });
+
+        els.fontsDatalist.innerHTML = options;
+        
+        // Load saved fonts
+        const savedHeader = localStorage.getItem('brandSafe_headerFont');
+        const savedBody = localStorage.getItem('brandSafe_bodyFont');
+        
+        if (savedHeader) {
+            state.headerFont = savedHeader;
+            els.fontHeaderInput.value = savedHeader;
+            loadFont(savedHeader, 'header');
+        }
+        if (savedBody) {
+            state.bodyFont = savedBody;
+            els.fontBodyInput.value = savedBody;
+            loadFont(savedBody, 'body');
+        }
+    }
+
+    // --- Event Listeners ---
+    function setupEvents() {
+        // Canvas/Upload
+        els.fileInput.addEventListener('change', handleImageUpload);
+        
+        els.fileInput.addEventListener('dragenter', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
+        els.fileInput.addEventListener('dragover', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
+        els.fileInput.addEventListener('dragleave', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
+        els.fileInput.addEventListener('drop', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
+
+        els.canvas.addEventListener('click', handleCanvasClick);
+        els.btnResetImage.addEventListener('click', resetImage);
+        
+        // Manual Palette
+        els.btnAddManual.addEventListener('click', addManualPaletteColor);
+        els.manualInput.addEventListener('keypress', (e) => { if(e.key==='Enter') addManualPaletteColor() });
+        els.btnClearPalette.addEventListener('click', () => {
+            state.palette = [];
+            renderPalette();
+        });
+
+        // Native Pickers
+        els.bgPicker.addEventListener('input', (e) => {
+            state.baseBg = e.target.value;
+            els.bgLightness.value = 0; 
+            updateColor('bg', e.target.value);
+        });
+        els.textPicker.addEventListener('input', (e) => {
+            state.baseText = e.target.value;
+            els.textLightness.value = 0; 
+            updateColor('text', e.target.value);
+        });
+
+        // Manual Text Inputs
+        els.bgText.addEventListener('input', (e) => handleManualInput('bg', e.target.value));
+        els.textText.addEventListener('input', (e) => handleManualInput('text', e.target.value));
+
+        // Lightness Sliders
+        els.bgLightness.addEventListener('input', (e) => adjustLightness('bg', e.target.value));
+        els.textLightness.addEventListener('input', (e) => adjustLightness('text', e.target.value));
+
+        // Swap
+        els.btnSwap.addEventListener('click', () => {
+            const temp = state.bg;
+            const tempBase = state.baseBg;
+            state.bg = state.text;
+            state.baseBg = state.baseText;
+            state.text = temp;
+            state.baseText = tempBase;
+            els.bgLightness.value = 0;
+            els.textLightness.value = 0;
+            updateUI();
+        });
+
+        // Slide
+        els.btnShowSlide.addEventListener('click', () => {
+            updateSlideCompliance();
+            els.slideModal.classList.remove('hidden');
+        });
+        els.btnCloseSlide.addEventListener('click', () => els.slideModal.classList.add('hidden'));
+        els.slideModal.addEventListener('click', (e) => {
+            if(e.target === els.slideModal) els.slideModal.classList.add('hidden');
+        });
+        els.btnDownloadSlide.addEventListener('click', downloadSlide);
+
+        // Font Inputs
+        els.fontHeaderInput.addEventListener('change', (e) => {
+            const fontName = e.target.value.trim();
+            if(fontName) {
+                loadFont(fontName, 'header');
+                localStorage.setItem('brandSafe_headerFont', fontName);
+            }
+        });
+        els.fontBodyInput.addEventListener('change', (e) => {
+            const fontName = e.target.value.trim();
+            if(fontName) {
+                loadFont(fontName, 'body');
+                localStorage.setItem('brandSafe_bodyFont', fontName);
+            }
+        });
+    }
+
+    // --- Font Logic ---
+    function applyFontStyle(fontName, type) {
+        if (type === 'header') {
+            state.headerFont = fontName;
+            els.slideMainTitle.style.fontFamily = `"${fontName}", sans-serif`;
+            els.slideExampleHeader.style.fontFamily = `"${fontName}", sans-serif`;
+            els.slideFontNameHeader.textContent = fontName;
+        } else {
+            state.bodyFont = fontName;
+            els.slideSubtitle.style.fontFamily = `"${fontName}", sans-serif`;
+            els.slideExampleBody.style.fontFamily = `"${fontName}", sans-serif`;
+            els.slideFontNameBody.textContent = fontName;
+        }
+    }
+
+    function loadFont(fontName, type) {
+        if(!fontName) return;
+        
+        const input = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
+        const linkTag = type === 'header' ? els.headerFontLink : els.bodyFontLink;
+        
+        // Feedback State
+        input.classList.add('border-yellow-500');
+        input.classList.remove('border-agency-600', 'border-red-500', 'border-green-500');
+
+        // 1. CHECK IF SYSTEM FONT
+        // We compare case-insensitive for better UX
+        const isSystem = systemFonts.some(sf => sf.toLowerCase() === fontName.toLowerCase());
+
+        if (isSystem) {
+            applyFontStyle(fontName, type);
+            input.classList.remove('border-yellow-500');
+            input.classList.add('border-green-500');
+            return; // Stop here, no download needed
+        }
+
+        // 2. FETCH GOOGLE FONT
+        const url = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;700;800&display=swap`;
+        
+        linkTag.onload = () => {
+            applyFontStyle(fontName, type);
+            input.classList.remove('border-yellow-500');
+            input.classList.add('border-green-500');
         };
 
-        // --- Top 300 + Modern Google Fonts List ---
-        const popularGoogleFonts = [
-            "Bricolage Grotesque", "Inter", "Roboto", "Open Sans", "Noto Sans JP", "Lato", "Montserrat", "Roboto Condensed", "Source Sans Pro", "Oswald", "Poppins",
-            "Roboto Mono", "Raleway", "Noto Sans", "PT Sans", "Mukta", "Merriweather", "Roboto Slab", "Nunito", "Playfair Display",
-            "Rubik", "Lora", "Work Sans", "Nunito Sans", "Fira Sans", "Quicksand", "Barlow", "Inconsolata", "Titillium Web",
-            "PT Serif", "Heebo", "Libre Franklin", "DM Sans", "Arimo", "Karla", "Josefin Sans", "Mulish", "Libre Baskerville",
-            "Ubuntu", "PT Sans Narrow", "Oxygen", "Bebas Neue", "Bitter", "Cabin", "Dancing Script", "Source Code Pro", "Abel",
-            "Prompt", "Varela Round", "Exo 2", "Anton", "Maven Pro", "Hind", "Fjalla One", "Crimson Text", "Pacifico", "Lobster",
-            "Yanone Kaffeesatz", "Comfortaa", "Arvo", "Noto Serif", "Slabo 27px", "Merriweather Sans", "Asap", "Signika",
-            "Archivo Narrow", "Questrial", "Catamaran", "Cairo", "Amatic SC", "Cuprum", "Muli", "Frank Ruhl Libre",
-            "Barlow Condensed", "Play", "Pathway Gothic One", "Rokkitt", "Alegreya", "Exo", "EB Garamond", "Righteous", "Crete Round",
-            "Overpass", "Old Standard TT", "Cinzel", "Domine", "Changa", "Rajdhani", "Cormorant Garamond", "Kanit", "Teko",
-            "Source Serif Pro", "Permanent Marker", "Bree Serif", "Vollkorn", "Patua One", "Abril Fatface", "Cookie", "Francois One",
-            "Russo One", "Acme", "Alegreya Sans", "Chivo", "Alfa Slab One", "Didact Gothic", "Great Vibes", "Amaranth", "Philosopher",
-            "Satisfy", "Courgette", "Quattrocento Sans", "Gloria Hallelujah", "News Cycle", "Glegoo", "Saira Condensed",
-            "Cardo", "Fredoka One", "Jura", "Orbitron", "Kalam", "Volkhov", "Sacramento", "Prata",
-            "Yellowtail", "Poiret One", "Monoton", "Kaushan Script", "Marck Script", "Space Grotesk", "Syne", "Outfit", "Epilogue",
-            "Manrope", "Urbanist", "Be Vietnam Pro", "Plus Jakarta Sans", "Lexend", "Sora", "JetBrains Mono"
-        ].sort();
-
-        // --- Elements ---
-        const els = {
-            // Left Panel
-            fileInput: document.getElementById('file-input'),
-            dropZone: document.getElementById('drop-zone'),
-            uploadPlaceholder: document.getElementById('upload-placeholder'),
-            canvasContainer: document.getElementById('canvas-container'),
-            canvas: document.getElementById('img-canvas'),
-            pickerHint: document.getElementById('picker-hint'),
-            paletteGrid: document.getElementById('palette-grid'),
-            manualInput: document.getElementById('manual-hex-input'),
-            btnAddManual: document.getElementById('btn-add-manual'),
-            btnClearPalette: document.getElementById('clear-palette'),
-            btnResetImage: document.getElementById('btn-reset-image'),
-
-            // Format
-            fmtHex: document.getElementById('fmt-hex'),
-            fmtRgb: document.getElementById('fmt-rgb'),
-
-            // Controls
-            controlBg: document.getElementById('control-bg'),
-            controlText: document.getElementById('control-text'),
-            indicatorBg: document.getElementById('indicator-bg'),
-            indicatorText: document.getElementById('indicator-text'),
-
-            // Inputs
-            bgPicker: document.getElementById('bg-picker'),
-            bgText: document.getElementById('bg-text'),
-            bgLightness: document.getElementById('bg-lightness'),
-
-            textPicker: document.getElementById('text-picker'),
-            textText: document.getElementById('text-text'),
-            textLightness: document.getElementById('text-lightness'),
-
-            btnSwap: document.getElementById('btn-swap'),
-
-            // Visuals
-            bgVisual: document.getElementById('bg-visual-indicator'),
-            textVisual: document.getElementById('text-visual-indicator'),
-
-            // Preview
-            card: document.getElementById('preview-card'),
-
-            // Scoreboard
-            ratioDisplay: document.getElementById('contrast-ratio'),
-            badges: {
-                aaNorm: document.getElementById('badge-aa-normal'),
-                aaaNorm: document.getElementById('badge-aaa-normal'),
-                aaLarge: document.getElementById('badge-aa-large'),
-                aaaLarge: document.getElementById('badge-aaa-large'),
-            },
-
-            // Slide
-            btnShowSlide: document.getElementById('btn-show-slide'),
-            slideModal: document.getElementById('slide-modal'),
-            btnCloseSlide: document.getElementById('close-slide'),
-            btnDownloadSlide: document.getElementById('download-slide'),
-            slideContainer: document.getElementById('slide-container'),
-            slideBgVal: document.getElementById('slide-bg-val'),
-            slideTextVal: document.getElementById('slide-text-val'),
-            // Slide Elements
-            slideMainTitle: document.getElementById('slide-main-title'),
-            slideSubtitle: document.getElementById('slide-subtitle'),
-            slideExampleHeader: document.getElementById('slide-example-header'),
-            slideExampleBody: document.getElementById('slide-example-body'),
-            slideBadges: {
-                aaNorm: document.getElementById('slide-badge-aa-norm'),
-                aaaNorm: document.getElementById('slide-badge-aaa-norm'),
-                aaLarge: document.getElementById('slide-badge-aa-large'),
-                aaaLarge: document.getElementById('slide-badge-aaa-large'),
-            },
-            slideFontNameHeader: document.getElementById('slide-font-name-header'),
-            slideFontNameBody: document.getElementById('slide-font-name-body'),
-
-            // Font Controls
-            fontHeaderInput: document.getElementById('font-header-input'),
-            fontBodyInput: document.getElementById('font-body-input'),
-            fontsDatalist: document.getElementById('google-fonts-list'),
-            headerFontLink: document.getElementById('header-font-link'),
-            bodyFontLink: document.getElementById('body-font-link')
+        linkTag.onerror = () => {
+            input.classList.remove('border-yellow-500');
+            input.classList.add('border-red-500');
+            alert(`Could not load font "${fontName}". It may not be available on Google Fonts.`);
         };
 
-        // --- Init ---
-        function init() {
-            setMode('bg');
-            updateUI();
-            setupEvents();
-            setupFonts();
+        linkTag.href = url;
+    }
 
-            // Set default font names if not loaded from storage
-            if (els.slideFontNameHeader.textContent === '') els.slideFontNameHeader.textContent = state.headerFont;
-            if (els.slideFontNameBody.textContent === '') els.slideFontNameBody.textContent = state.bodyFont;
-        }
-
-        function setupFonts() {
-            // Populate Datalist
-            els.fontsDatalist.innerHTML = popularGoogleFonts.map(f => `<option value="${f}">`).join('');
-
-            // Load saved fonts
-            const savedHeader = localStorage.getItem('brandSafe_headerFont');
-            const savedBody = localStorage.getItem('brandSafe_bodyFont');
-
-            if (savedHeader) {
-                state.headerFont = savedHeader;
-                els.fontHeaderInput.value = savedHeader;
-                loadGoogleFont(savedHeader, 'header');
-            }
-            if (savedBody) {
-                state.bodyFont = savedBody;
-                els.fontBodyInput.value = savedBody;
-                loadGoogleFont(savedBody, 'body');
-            }
-        }
-
-        // --- Event Listeners ---
-        function setupEvents() {
-            // Canvas/Upload
-            els.fileInput.addEventListener('change', handleImageUpload);
-
-            els.fileInput.addEventListener('dragenter', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
-            els.fileInput.addEventListener('dragover', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
-            els.fileInput.addEventListener('dragleave', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
-            els.fileInput.addEventListener('drop', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
-
-            els.canvas.addEventListener('click', handleCanvasClick);
-            els.btnResetImage.addEventListener('click', resetImage);
-
-            // Manual Palette
-            els.btnAddManual.addEventListener('click', addManualPaletteColor);
-            els.manualInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addManualPaletteColor()
-            });
-            els.btnClearPalette.addEventListener('click', () => {
-                state.palette = [];
-                renderPalette();
-            });
-
-            // Native Pickers
-            els.bgPicker.addEventListener('input', (e) => {
-                state.baseBg = e.target.value;
-                els.bgLightness.value = 0;
-                updateColor('bg', e.target.value);
-            });
-            els.textPicker.addEventListener('input', (e) => {
-                state.baseText = e.target.value;
-                els.textLightness.value = 0;
-                updateColor('text', e.target.value);
-            });
-
-            // Manual Text Inputs
-            els.bgText.addEventListener('input', (e) => handleManualInput('bg', e.target.value));
-            els.textText.addEventListener('input', (e) => handleManualInput('text', e.target.value));
-
-            // Lightness Sliders
-            els.bgLightness.addEventListener('input', (e) => adjustLightness('bg', e.target.value));
-            els.textLightness.addEventListener('input', (e) => adjustLightness('text', e.target.value));
-
-            // Swap
-            els.btnSwap.addEventListener('click', () => {
-                const temp = state.bg;
-                const tempBase = state.baseBg;
-                state.bg = state.text;
-                state.baseBg = state.baseText;
-                state.text = temp;
-                state.baseText = tempBase;
-                els.bgLightness.value = 0;
-                els.textLightness.value = 0;
-                updateUI();
-            });
-
-            // Slide
-            els.btnShowSlide.addEventListener('click', () => {
-                updateSlideCompliance();
-                els.slideModal.classList.remove('hidden');
-            });
-            els.btnCloseSlide.addEventListener('click', () => els.slideModal.classList.add('hidden'));
-            els.slideModal.addEventListener('click', (e) => {
-                if (e.target === els.slideModal) els.slideModal.classList.add('hidden');
-            });
-            els.btnDownloadSlide.addEventListener('click', downloadSlide);
-
-            // Font Inputs
-            els.fontHeaderInput.addEventListener('change', (e) => {
-                const fontName = e.target.value.trim();
-                if (fontName) {
-                    loadGoogleFont(fontName, 'header');
-                    localStorage.setItem('brandSafe_headerFont', fontName);
-                }
-            });
-            els.fontBodyInput.addEventListener('change', (e) => {
-                const fontName = e.target.value.trim();
-                if (fontName) {
-                    loadGoogleFont(fontName, 'body');
-                    localStorage.setItem('brandSafe_bodyFont', fontName);
-                }
-            });
-        }
-
-        // --- Font Logic ---
-        function loadGoogleFont(fontName, type) {
-            if (!fontName) return;
-
-            const input = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
-            const linkTag = type === 'header' ? els.headerFontLink : els.bodyFontLink;
-
-            input.classList.add('border-yellow-500');
-            input.classList.remove('border-agency-600', 'border-red-500', 'border-green-500');
-
-            const url = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;700;800&display=swap`;
-
-            linkTag.onload = () => {
-                if (type === 'header') {
-                    state.headerFont = fontName;
-                    els.slideMainTitle.style.fontFamily = `"${fontName}", sans-serif`;
-                    els.slideExampleHeader.style.fontFamily = `"${fontName}", sans-serif`;
-                    els.slideFontNameHeader.textContent = fontName; // Update slide label
-                } else {
-                    state.bodyFont = fontName;
-                    els.slideSubtitle.style.fontFamily = `"${fontName}", sans-serif`;
-                    els.slideExampleBody.style.fontFamily = `"${fontName}", sans-serif`;
-                    els.slideFontNameBody.textContent = fontName; // Update slide label
-                }
-                input.classList.remove('border-yellow-500');
-                input.classList.add('border-green-500');
+    // --- Image Handling ---
+    function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                els.uploadPlaceholder.classList.add('hidden');
+                els.canvasContainer.classList.remove('hidden');
+                els.pickerHint.classList.remove('opacity-0');
+                els.fileInput.classList.add('hidden');
+                els.btnResetImage.classList.remove('hidden');
+                els.canvas.width = img.width;
+                els.canvas.height = img.height;
+                const ctx = els.canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
             };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
 
-            linkTag.onerror = () => {
-                input.classList.remove('border-yellow-500');
-                input.classList.add('border-red-500');
-                alert(`Could not load font "${fontName}"`);
-            };
+    function resetImage() {
+        els.fileInput.value = ''; 
+        els.fileInput.classList.remove('hidden'); 
+        els.btnResetImage.classList.add('hidden'); 
+        els.pickerHint.classList.add('opacity-0');
+        els.canvasContainer.classList.add('hidden');
+        els.uploadPlaceholder.classList.remove('hidden');
+        const ctx = els.canvas.getContext('2d');
+        ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
+    }
 
-            linkTag.href = url;
-        }
-
-        // --- Image Handling ---
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    els.uploadPlaceholder.classList.add('hidden');
-                    els.canvasContainer.classList.remove('hidden');
-                    els.pickerHint.classList.remove('opacity-0');
-                    els.fileInput.classList.add('hidden');
-                    els.btnResetImage.classList.remove('hidden');
-                    els.canvas.width = img.width;
-                    els.canvas.height = img.height;
-                    const ctx = els.canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function resetImage() {
-            els.fileInput.value = '';
-            els.fileInput.classList.remove('hidden');
-            els.btnResetImage.classList.add('hidden');
-            els.pickerHint.classList.add('opacity-0');
-            els.canvasContainer.classList.add('hidden');
-            els.uploadPlaceholder.classList.remove('hidden');
-            const ctx = els.canvas.getContext('2d');
-            ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
-        }
-
-        function handleCanvasClick(e) {
-            const rect = els.canvas.getBoundingClientRect();
-            const scaleX = els.canvas.width / rect.width;
-            const scaleY = els.canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-            const ctx = els.canvas.getContext('2d');
-            const pixel = ctx.getImageData(x, y, 1, 1).data;
-            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
-            if (!state.palette.includes(hex)) {
-                state.palette.push(hex);
-                renderPalette();
-            }
-            handleSwatchClick(hex);
-        }
-
-        // --- Color Logic ---
-        window.handleSwatchClick = function(hex) {
-            if (state.activeMode === 'bg') {
-                state.baseBg = hex;
-                els.bgLightness.value = 0;
-            } else {
-                state.baseText = hex;
-                els.textLightness.value = 0;
-            }
-            // Explicitly update state and UI without skipping inputs
-            state[state.activeMode] = hex;
-            updateUI();
-        }
-
-        window.addToPalette = function(type) {
-            const hex = type === 'bg' ? state.bg : state.text;
-            if (!state.palette.includes(hex)) {
-                state.palette.push(hex);
-                renderPalette();
-            }
-        }
-
-        window.deleteSwatch = function(index) {
-            state.palette.splice(index, 1);
+    function handleCanvasClick(e) {
+        const rect = els.canvas.getBoundingClientRect();
+        const scaleX = els.canvas.width / rect.width;
+        const scaleY = els.canvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+        const ctx = els.canvas.getContext('2d');
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+        if (!state.palette.includes(hex)) {
+            state.palette.push(hex);
             renderPalette();
         }
+        handleSwatchClick(hex);
+    }
 
-        function addManualPaletteColor() {
-            let hex = els.manualInput.value.trim();
-            if (!hex.startsWith('#')) hex = '#' + hex;
-            if (isValidHex(hex)) {
-                state.palette.push(hex);
-                renderPalette();
-                els.manualInput.value = '';
+    // --- Color Logic ---
+    window.handleSwatchClick = function(hex) {
+        if (state.activeMode === 'bg') {
+            state.baseBg = hex;
+            els.bgLightness.value = 0;
+        } else {
+            state.baseText = hex;
+            els.textLightness.value = 0;
+        }
+        // Explicitly update state and UI without skipping inputs
+        state[state.activeMode] = hex;
+        updateUI(); 
+    }
+
+    window.addToPalette = function(type) {
+        const hex = type === 'bg' ? state.bg : state.text;
+        if (!state.palette.includes(hex)) {
+            state.palette.push(hex);
+            renderPalette();
+        }
+    }
+
+    window.deleteSwatch = function(index) {
+        state.palette.splice(index, 1);
+        renderPalette();
+    }
+
+    function addManualPaletteColor() {
+        let hex = els.manualInput.value.trim();
+        if (!hex.startsWith('#')) hex = '#' + hex;
+        if (isValidHex(hex)) {
+            state.palette.push(hex);
+            renderPalette();
+            els.manualInput.value = '';
+            handleSwatchClick(hex);
+        }
+    }
+
+    function renderPalette() {
+        els.paletteGrid.innerHTML = '';
+        if (state.palette.length === 0) {
+            els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
+            return;
+        }
+        state.palette.forEach((hex, index) => {
+            const swatch = document.createElement('div');
+            swatch.className = 'swatch-container relative w-full pt-[100%] rounded-lg cursor-pointer shadow-md border border-slate-700/50 overflow-hidden group hover:scale-105 transition-transform duration-200';
+            swatch.style.backgroundColor = hex;
+            swatch.addEventListener('click', (e) => {
+                if(e.target.closest('.delete-btn')) return;
                 handleSwatchClick(hex);
-            }
-        }
-
-        function renderPalette() {
-            els.paletteGrid.innerHTML = '';
-            if (state.palette.length === 0) {
-                els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
-                return;
-            }
-            state.palette.forEach((hex, index) => {
-                const swatch = document.createElement('div');
-                swatch.className = 'swatch-container relative w-full pt-[100%] rounded-lg cursor-pointer shadow-md border border-slate-700/50 overflow-hidden group hover:scale-105 transition-transform duration-200';
-                swatch.style.backgroundColor = hex;
-                swatch.addEventListener('click', (e) => {
-                    if (e.target.closest('.delete-btn')) return;
-                    handleSwatchClick(hex);
-                });
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn swatch-delete absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors z-10';
-                deleteBtn.innerHTML = '<i class="fa-solid fa-times text-[10px]"></i>';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteSwatch(index);
-                };
-                swatch.appendChild(deleteBtn);
-                els.paletteGrid.appendChild(swatch);
             });
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn swatch-delete absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors z-10';
+            deleteBtn.innerHTML = '<i class="fa-solid fa-times text-[10px]"></i>';
+            deleteBtn.onclick = (e) => { e.stopPropagation(); deleteSwatch(index); };
+            swatch.appendChild(deleteBtn);
+            els.paletteGrid.appendChild(swatch);
+        });
+    }
+
+    // --- Visual Editor ---
+    function adjustLightness(type, amount) {
+        const baseHex = type === 'bg' ? state.baseBg : state.baseText;
+        const amt = parseInt(amount);
+        const rgb = hexToRgb(baseHex);
+        const shift = amt * 5; 
+        const newR = clamp(rgb.r + shift);
+        const newG = clamp(rgb.g + shift);
+        const newB = clamp(rgb.b + shift);
+        const newHex = rgbToHex(newR, newG, newB);
+        state[type] = newHex;
+        updateUI(); 
+    }
+    
+    function clamp(num) { return Math.min(Math.max(Math.round(num), 0), 255); }
+
+    // --- Core UI Updates ---
+    function updateColor(type, hex) {
+        state[type] = hex;
+        updateUI(); 
+    }
+
+    function updateUI(skipInputType = null) {
+        els.bgPicker.value = state.bg;
+        els.textPicker.value = state.text;
+        els.bgVisual.style.backgroundColor = state.bg;
+        els.textVisual.style.backgroundColor = state.text;
+
+        const getDisplayValue = (hex) => {
+            if (state.displayFormat === 'hex') return hex.toUpperCase();
+            const rgb = hexToRgb(hex);
+            return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+        };
+
+        if (skipInputType !== 'bg') els.bgText.value = getDisplayValue(state.bg);
+        if (skipInputType !== 'text') els.textText.value = getDisplayValue(state.text);
+
+        els.card.style.backgroundColor = state.bg;
+        els.card.style.color = state.text;
+
+        els.slideContainer.style.backgroundColor = state.bg;
+        els.slideContainer.style.color = state.text;
+        els.slideBgVal.textContent = state.bg.toUpperCase();
+        els.slideTextVal.textContent = state.text.toUpperCase();
+        
+        const ratio = calculateContrastRatio(state.bg, state.text);
+        els.ratioDisplay.textContent = ratio.toFixed(2);
+        els.ratioDisplay.style.color = getRateColor(ratio);
+
+        updateBadges(ratio);
+    }
+
+    function updateSlideCompliance() {
+        const ratio = calculateContrastRatio(state.bg, state.text);
+        
+        // High Visibility Icons (Green Check / Red X) - Simple Circles
+        const pass = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+        const fail = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+        
+        const updateBadge = (el, passed, label) => {
+            el.innerHTML = `${passed ? pass : fail} <span>${label}</span>`;
+            el.style.opacity = passed ? '1' : '0.5'; 
+        };
+        
+        updateBadge(els.slideBadges.aaNorm, ratio >= 4.5, 'AA');
+        updateBadge(els.slideBadges.aaaNorm, ratio >= 7.0, 'AAA');
+        updateBadge(els.slideBadges.aaLarge, ratio >= 3.0, 'AA');
+        updateBadge(els.slideBadges.aaaLarge, ratio >= 4.5, 'AAA');
+    }
+
+    // --- Download ---
+    function downloadSlide() {
+        const btn = els.btnDownloadSlide;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing';
+        html2canvas(els.slideContainer, { scale: 2, backgroundColor: null, useCORS: true }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `brandsafe-slide-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            btn.innerHTML = originalText;
+        });
+    }
+
+    // --- Mode & Format ---
+    function setMode(mode) {
+        state.activeMode = mode;
+        if (mode === 'bg') {
+            els.controlBg.classList.add('mode-active');
+            els.controlBg.classList.remove('mode-inactive');
+            els.indicatorBg.classList.add('bg-blue-500');
+            els.indicatorBg.classList.remove('bg-slate-600');
+            els.controlText.classList.remove('mode-active');
+            els.controlText.classList.add('mode-inactive');
+            els.indicatorText.classList.remove('bg-blue-500');
+            els.indicatorText.classList.add('bg-slate-600');
+        } else {
+            els.controlText.classList.add('mode-active');
+            els.controlText.classList.remove('mode-inactive');
+            els.indicatorText.classList.add('bg-blue-500');
+            els.indicatorText.classList.remove('bg-slate-600');
+            els.controlBg.classList.remove('mode-active');
+            els.controlBg.classList.add('mode-inactive');
+            els.indicatorBg.classList.remove('bg-blue-500');
+            els.indicatorBg.classList.add('bg-slate-600');
         }
+    }
 
-        // --- Visual Editor ---
-        function adjustLightness(type, amount) {
-            const baseHex = type === 'bg' ? state.baseBg : state.baseText;
-            const amt = parseInt(amount);
-            const rgb = hexToRgb(baseHex);
-            const shift = amt * 5;
-            const newR = clamp(rgb.r + shift);
-            const newG = clamp(rgb.g + shift);
-            const newB = clamp(rgb.b + shift);
-            const newHex = rgbToHex(newR, newG, newB);
-            state[type] = newHex;
-            updateUI();
+    window.toggleFormat = function(fmt) {
+        state.displayFormat = fmt;
+        if (fmt === 'hex') {
+            els.fmtHex.classList.add('bg-slate-600', 'text-white');
+            els.fmtHex.classList.remove('text-slate-500');
+            els.fmtRgb.classList.remove('bg-slate-600', 'text-white');
+            els.fmtRgb.classList.add('text-slate-500');
+        } else {
+            els.fmtRgb.classList.add('bg-slate-600', 'text-white');
+            els.fmtRgb.classList.remove('text-slate-500');
+            els.fmtHex.classList.remove('bg-slate-600', 'text-white');
+            els.fmtHex.classList.add('text-slate-500');
         }
+        updateUI();
+    }
 
-        function clamp(num) {
-            return Math.min(Math.max(Math.round(num), 0), 255);
-        }
-
-        // --- Core UI Updates ---
-        function updateColor(type, hex) {
-            state[type] = hex;
-            updateUI();
-        }
-
-        function updateUI(skipInputType = null) {
-            els.bgPicker.value = state.bg;
-            els.textPicker.value = state.text;
-            els.bgVisual.style.backgroundColor = state.bg;
-            els.textVisual.style.backgroundColor = state.text;
-
-            const getDisplayValue = (hex) => {
-                if (state.displayFormat === 'hex') return hex.toUpperCase();
-                const rgb = hexToRgb(hex);
-                return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
-            };
-
-            if (skipInputType !== 'bg') els.bgText.value = getDisplayValue(state.bg);
-            if (skipInputType !== 'text') els.textText.value = getDisplayValue(state.text);
-
-            els.card.style.backgroundColor = state.bg;
-            els.card.style.color = state.text;
-
-            els.slideContainer.style.backgroundColor = state.bg;
-            els.slideContainer.style.color = state.text;
-            els.slideBgVal.textContent = state.bg.toUpperCase();
-            els.slideTextVal.textContent = state.text.toUpperCase();
-
-            const ratio = calculateContrastRatio(state.bg, state.text);
-            els.ratioDisplay.textContent = ratio.toFixed(2);
-            els.ratioDisplay.style.color = getRateColor(ratio);
-
-            updateBadges(ratio);
-        }
-
-        function updateSlideCompliance() {
-            const ratio = calculateContrastRatio(state.bg, state.text);
-
-            // High Visibility Icons (Green Check / Red X) - Simple Circles
-            const pass = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-            const fail = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
-
-            const updateBadge = (el, passed, label) => {
-                el.innerHTML = `${passed ? pass : fail} <span>${label}</span>`;
-                el.style.opacity = passed ? '1' : '0.5';
-            };
-
-            updateBadge(els.slideBadges.aaNorm, ratio >= 4.5, 'AA');
-            updateBadge(els.slideBadges.aaaNorm, ratio >= 7.0, 'AAA');
-            updateBadge(els.slideBadges.aaLarge, ratio >= 3.0, 'AA');
-            updateBadge(els.slideBadges.aaaLarge, ratio >= 4.5, 'AAA');
-        }
-
-        // --- Download ---
-        function downloadSlide() {
-            const btn = els.btnDownloadSlide;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing';
-            html2canvas(els.slideContainer, {
-                scale: 2,
-                backgroundColor: null,
-                useCORS: true
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `brandsafe-slide-${Date.now()}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-                btn.innerHTML = originalText;
-            });
-        }
-
-        // --- Mode & Format ---
-        function setMode(mode) {
-            state.activeMode = mode;
-            if (mode === 'bg') {
-                els.controlBg.classList.add('mode-active');
-                els.controlBg.classList.remove('mode-inactive');
-                els.indicatorBg.classList.add('bg-blue-500');
-                els.indicatorBg.classList.remove('bg-slate-600');
-                els.controlText.classList.remove('mode-active');
-                els.controlText.classList.add('mode-inactive');
-                els.indicatorText.classList.remove('bg-blue-500');
-                els.indicatorText.classList.add('bg-slate-600');
-            } else {
-                els.controlText.classList.add('mode-active');
-                els.controlText.classList.remove('mode-inactive');
-                els.indicatorText.classList.add('bg-blue-500');
-                els.indicatorText.classList.remove('bg-slate-600');
-                els.controlBg.classList.remove('mode-active');
-                els.controlBg.classList.add('mode-inactive');
-                els.indicatorBg.classList.remove('bg-blue-500');
-                els.indicatorBg.classList.add('bg-slate-600');
+    function handleManualInput(type, value) {
+        const cleanVal = value.trim();
+        if (state.displayFormat === 'hex') {
+            if (isValidHex(cleanVal)) {
+                let hex = cleanVal;
+                if (!hex.startsWith('#')) hex = '#' + hex;
+                state[type] = hex;
+                // Reset base color for lightness slider
+                if(type === 'bg') state.baseBg = hex;
+                if(type === 'text') state.baseText = hex;
+                updateUI(type); 
+            }
+        } else {
+            const rgbParts = cleanVal.split(',').map(n => parseInt(n.trim()));
+            if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
+                const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
+                state[type] = hex;
+                // Reset base color for lightness slider
+                if(type === 'bg') state.baseBg = hex;
+                if(type === 'text') state.baseText = hex;
+                updateUI(type);
             }
         }
+    }
 
-        window.toggleFormat = function(fmt) {
-            state.displayFormat = fmt;
-            if (fmt === 'hex') {
-                els.fmtHex.classList.add('bg-slate-600', 'text-white');
-                els.fmtHex.classList.remove('text-slate-500');
-                els.fmtRgb.classList.remove('bg-slate-600', 'text-white');
-                els.fmtRgb.classList.add('text-slate-500');
-            } else {
-                els.fmtRgb.classList.add('bg-slate-600', 'text-white');
-                els.fmtRgb.classList.remove('text-slate-500');
-                els.fmtHex.classList.remove('bg-slate-600', 'text-white');
-                els.fmtHex.classList.add('text-slate-500');
-            }
-            updateUI();
-        }
+    // --- Helpers ---
+    function updateBadges(ratio) {
+        const passIcon = '<i class="fa-solid fa-circle-check text-lg"></i>';
+        const failIcon = '<i class="fa-solid fa-circle-xmark text-lg"></i>';
+        const setBadge = (el, passed) => {
+            el.innerHTML = passed ? passIcon : failIcon;
+            el.className = passed ? 'text-green-500 shrink-0' : 'text-red-500 shrink-0';
+        };
+        setBadge(els.badges.aaNorm, ratio >= 4.5);
+        setBadge(els.badges.aaaNorm, ratio >= 7.0);
+        setBadge(els.badges.aaLarge, ratio >= 3.0);
+        setBadge(els.badges.aaaLarge, ratio >= 4.5);
+    }
+    function getRateColor(ratio) {
+        if (ratio >= 7) return '#4ade80'; 
+        if (ratio >= 4.5) return '#facc15'; 
+        if (ratio >= 3) return '#fb923c'; 
+        return '#f87171'; 
+    }
+    function isValidHex(hex) { return /^#?[0-9A-F]{6}$/i.test(hex); }
+    function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 0, g: 0, b: 0 };
+    }
+    function getLuminance(r, g, b) {
+        const a = [r, g, b].map(function(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+    function calculateContrastRatio(hex1, hex2) {
+        const rgb1 = hexToRgb(hex1);
+        const rgb2 = hexToRgb(hex2);
+        if (!rgb1 || !rgb2) return 1;
+        const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
+        const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+        const bright = Math.max(lum1, lum2);
+        const dark = Math.min(lum1, lum2);
+        return (bright + 0.05) / (dark + 0.05);
+    }
 
-        function handleManualInput(type, value) {
-            const cleanVal = value.trim();
-            if (state.displayFormat === 'hex') {
-                if (isValidHex(cleanVal)) {
-                    let hex = cleanVal;
-                    if (!hex.startsWith('#')) hex = '#' + hex;
-                    state[type] = hex;
-                    // Reset base color for lightness slider
-                    if (type === 'bg') state.baseBg = hex;
-                    if (type === 'text') state.baseText = hex;
-                    updateUI(type);
-                }
-            } else {
-                const rgbParts = cleanVal.split(',').map(n => parseInt(n.trim()));
-                if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
-                    const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
-                    state[type] = hex;
-                    // Reset base color for lightness slider
-                    if (type === 'bg') state.baseBg = hex;
-                    if (type === 'text') state.baseText = hex;
-                    updateUI(type);
-                }
-            }
-        }
-
-        // --- Helpers ---
-        function updateBadges(ratio) {
-            const passIcon = '<i class="fa-solid fa-circle-check text-lg"></i>';
-            const failIcon = '<i class="fa-solid fa-circle-xmark text-lg"></i>';
-            const setBadge = (el, passed) => {
-                el.innerHTML = passed ? passIcon : failIcon;
-                el.className = passed ? 'text-green-500 shrink-0' : 'text-red-500 shrink-0';
-            };
-            setBadge(els.badges.aaNorm, ratio >= 4.5);
-            setBadge(els.badges.aaaNorm, ratio >= 7.0);
-            setBadge(els.badges.aaLarge, ratio >= 3.0);
-            setBadge(els.badges.aaaLarge, ratio >= 4.5);
-        }
-
-        function getRateColor(ratio) {
-            if (ratio >= 7) return '#4ade80';
-            if (ratio >= 4.5) return '#facc15';
-            if (ratio >= 3) return '#fb923c';
-            return '#f87171';
-        }
-
-        function isValidHex(hex) {
-            return /^#?[0-9A-F]{6}$/i.test(hex);
-        }
-
-        function rgbToHex(r, g, b) {
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : {
-                r: 0,
-                g: 0,
-                b: 0
-            };
-        }
-
-        function getLuminance(r, g, b) {
-            const a = [r, g, b].map(function(v) {
-                v /= 255;
-                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-            });
-            return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-        }
-
-        function calculateContrastRatio(hex1, hex2) {
-            const rgb1 = hexToRgb(hex1);
-            const rgb2 = hexToRgb(hex2);
-            if (!rgb1 || !rgb2) return 1;
-            const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
-            const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-            const bright = Math.max(lum1, lum2);
-            const dark = Math.min(lum1, lum2);
-            return (bright + 0.05) / (dark + 0.05);
-        }
-
-        window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-
 </html>
