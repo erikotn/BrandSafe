@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrandSafe | Design Workbench</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Dynamic Font Links -->
     <link id="header-font-link" rel="stylesheet" href="">
     <link id="body-font-link" rel="stylesheet" href="">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -39,10 +36,8 @@
         }
     </script>
 
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Html2Canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -148,7 +143,6 @@
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-200">
 
-    <!-- Header -->
     <header class="border-b border-agency-700 bg-agency-900/95 backdrop-blur px-6 py-4 flex justify-between items-center z-10 shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
@@ -161,14 +155,11 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         
-        <!-- LEFT PANEL: Image & Palette -->
         <section class="w-full md:w-5/12 lg:w-4/12 border-r border-agency-700 flex flex-col bg-agency-800/50 overflow-y-auto custom-scrollbar">
             <div class="p-6 space-y-8">
                 
-                <!-- Upload Zone / Image Canvas -->
                 <div>
                     <div class="flex justify-between items-end mb-3">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">1. Source Image</h2>
@@ -180,32 +171,26 @@
 
                     <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 text-center transition cursor-pointer group min-h-[200px] flex flex-col items-center justify-center overflow-hidden">
                         
-                        <!-- File Input overlay -->
                         <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
                         
-                        <!-- Empty State -->
                         <div id="upload-placeholder" class="pointer-events-none p-8">
                             <i class="fa-solid fa-eye-dropper text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
                             <p class="text-sm font-medium text-slate-300">Upload Image</p>
                             <p class="text-xs text-slate-500 mt-1">to enable color picker</p>
                         </div>
 
-                        <!-- Image Canvas (Hidden until loaded) -->
                         <div id="canvas-container" class="hidden relative w-full h-full bg-agency-900 z-10">
-                            <!-- Helper Canvas -->
                             <canvas id="img-canvas" class="cursor-crosshair w-full h-auto object-contain block mx-auto"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Palette Section -->
                 <div>
                      <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">2. Palette</h2>
                         <button id="clear-palette" class="text-[10px] text-slate-500 hover:text-red-400 underline">Clear All</button>
                      </div>
                      
-                     <!-- Quick Tools -->
                      <div class="flex flex-wrap gap-2 mb-4">
                         <button onclick="handleSwatchClick('#000000')" class="w-10 h-10 rounded-lg bg-black border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure Black">
                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 text-white rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
@@ -222,7 +207,6 @@
                         </div>
                      </div>
 
-                    <!-- Palette Grid -->
                     <div id="palette-grid" class="grid grid-cols-5 gap-3 min-h-[60px]">
                         <div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">
                             Click image to extract colors
@@ -233,15 +217,12 @@
             </div>
         </section>
 
-        <!-- RIGHT PANEL: Editor & Checks -->
         <section class="flex-1 bg-agency-900 flex flex-col overflow-y-auto custom-scrollbar">
             <div class="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto w-full space-y-8">
 
-                <!-- Editor Controls -->
                 <div>
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">Design Workbench</h2>
-                        <!-- Format Toggle -->
                         <div class="flex bg-agency-800 rounded-lg p-1 border border-agency-700">
                             <button onclick="toggleFormat('hex')" id="fmt-hex" class="px-3 py-1 text-[10px] font-bold rounded bg-slate-600 text-white shadow-sm transition-all">HEX</button>
                             <button onclick="toggleFormat('rgb')" id="fmt-rgb" class="px-3 py-1 text-[10px] font-bold rounded text-slate-500 hover:text-slate-300 transition-all">RGB</button>
@@ -250,9 +231,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
-                        <!-- Background Control -->
                         <div id="control-bg" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-active">
-                            <!-- Click overlay for mode selection -->
                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('bg')"></div>
 
                             <div class="relative z-10 pointer-events-none">
@@ -270,7 +249,6 @@
                                     </button>
                                     <input type="color" id="bg-picker" class="opacity-50 hover:opacity-100 transition-opacity">
                                 </div>
-                                <!-- Lightness Slider -->
                                 <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
                                     <div class="flex justify-between text-[10px] text-slate-500 mb-1">
                                         <span>Darker</span>
@@ -282,9 +260,7 @@
                             </div>
                         </div>
 
-                        <!-- Text Control -->
                         <div id="control-text" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-inactive">
-                             <!-- Click overlay for mode selection -->
                              <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('text')"></div>
 
                              <div class="relative z-10 pointer-events-none">
@@ -302,7 +278,6 @@
                                     </button>
                                     <input type="color" id="text-picker" class="opacity-50 hover:opacity-100 transition-opacity">
                                 </div>
-                                <!-- Lightness Slider -->
                                 <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
                                     <div class="flex justify-between text-[10px] text-slate-500 mb-1">
                                         <span>Darker</span>
@@ -317,9 +292,7 @@
                     </div>
                 </div>
 
-                <!-- Stats & Checks -->
                 <div class="bg-agency-800 rounded-2xl p-6 border border-agency-700 shadow-lg">
-                     <!-- Header -->
                      <div class="flex justify-between items-start mb-6 gap-4">
                         <div class="flex flex-col min-w-0">
                             <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider truncate">WCAG Check</h2>
@@ -330,14 +303,12 @@
                         </button>
                     </div>
 
-                    <!-- Grid -->
                     <div class="grid grid-cols-2 gap-4 mb-1 px-1">
                         <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AA</div>
                         <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AAA</div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- AA Normal -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
@@ -345,7 +316,6 @@
                             </div>
                             <div id="badge-aa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
-                        <!-- AAA Normal -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
@@ -353,7 +323,6 @@
                             </div>
                             <div id="badge-aaa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
-                        <!-- AA Large -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
@@ -361,7 +330,6 @@
                             </div>
                             <div id="badge-aa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
-                        <!-- AAA Large -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
@@ -372,7 +340,6 @@
                     </div>
                 </div>
 
-                <!-- Live Preview (Small) -->
                 <div>
                     <h2 class="text-sm font-semibold text-agency-500 mb-3 uppercase tracking-wider">Working Preview</h2>
                     <div id="preview-card" class="w-full p-8 rounded-xl shadow-inner transition-colors-fast border border-slate-700/20 flex flex-col items-start gap-4">
@@ -389,10 +356,8 @@
         </section>
     </main>
 
-    <!-- SLIDE PRESENTATION MODAL -->
     <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
         
-        <!-- Controls overlay (Top Right) -->
         <div class="absolute top-4 right-4 flex gap-3 z-50">
              <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
                 <i class="fa-solid fa-download"></i> Download PNG
@@ -402,28 +367,34 @@
             </button>
         </div>
 
-        <!-- Controls overlay (Top Left) -->
         <div class="absolute top-4 left-4 z-50 flex flex-col gap-2 items-start bg-agency-800/90 backdrop-blur p-3 rounded-lg border border-agency-700 shadow-xl">
+            
             <div class="flex items-center gap-2">
                 <label class="text-[10px] text-slate-400 font-bold w-16">HEADER:</label>
-                <input list="google-fonts-list" id="font-header-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Font name...">
+                <input list="google-fonts-list" id="font-header-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Google or Upload...">
+                <label class="bg-agency-700 hover:bg-blue-600 border border-agency-600 text-slate-200 rounded px-2 py-1 cursor-pointer transition" title="Upload TTF/OTF">
+                    <i class="fa-solid fa-paperclip text-xs"></i>
+                    <input type="file" class="hidden" accept=".ttf, .otf, .woff, .woff2" onchange="handleFontFile(this, 'header')">
+                </label>
             </div>
+
             <div class="flex items-center gap-2">
                 <label class="text-[10px] text-slate-400 font-bold w-16">BODY:</label>
-                <input list="google-fonts-list" id="font-body-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Font name...">
+                <input list="google-fonts-list" id="font-body-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Google or Upload...">
+                <label class="bg-agency-700 hover:bg-blue-600 border border-agency-600 text-slate-200 rounded px-2 py-1 cursor-pointer transition" title="Upload TTF/OTF">
+                    <i class="fa-solid fa-paperclip text-xs"></i>
+                    <input type="file" class="hidden" accept=".ttf, .otf, .woff, .woff2" onchange="handleFontFile(this, 'body')">
+                </label>
             </div>
+
             <datalist id="google-fonts-list">
-                <!-- Populated via JS -->
-            </datalist>
+                </datalist>
         </div>
 
         <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
-            <!-- Slide Content -->
             <div class="flex-1 px-16 py-12 md:px-20 md:py-16 flex flex-col justify-center relative z-10">
                 
-                <!-- Top Section: Titles, Colors, Icon -->
                 <div class="flex justify-between items-end mb-8">
-                    <!-- Left: Titles -->
                     <div class="flex flex-col justify-center gap-2"> 
                         <h1 id="slide-main-title" class="text-5xl md:text-6xl font-bold tracking-tighter mb-4">
                             Huisstijl.
@@ -433,7 +404,6 @@
                         </p>
                     </div>
 
-                    <!-- Right: Colors & Icon -->
                     <div class="flex items-center gap-8">
                         <div class="flex flex-col items-end text-right gap-3">
                             <div>
@@ -445,22 +415,17 @@
                                 <span id="slide-text-val" class="font-mono text-2xl">#FFFFFF</span>
                             </div>
                         </div>
-                        <!-- Icon -->
                         <div class="opacity-20">
                             <i class="fa-solid fa-universal-access text-6xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Divider -->
                 <div class="w-full h-px bg-current opacity-20 mb-10"></div>
 
-                <!-- Bottom Section: Text Examples -->
                 <div class="flex-1 grid grid-cols-[1fr_auto_1fr] gap-12 items-start">
                     
-                    <!-- Left Column: Large Text -->
                     <div class="flex flex-col gap-6">
-                        <!-- Header for Column -->
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
                                 <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Grote tekst</span>
@@ -471,18 +436,14 @@
                                 <div id="slide-badge-aaa-large" class="slide-badge"></div>
                             </div>
                         </div>
-                        <!-- Text -->
                         <p id="slide-example-header" class="text-5xl font-bold leading-tight">
                             Lorem ipsum dolor sit amet.
                         </p>
                     </div>
 
-                    <!-- Center: Vertical Divider -->
                     <div class="w-px h-full bg-current opacity-20"></div>
 
-                    <!-- Right Column: Normal Text -->
                     <div class="flex flex-col gap-6">
-                        <!-- Header for Column -->
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
                                 <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Normale tekst</span>
@@ -493,7 +454,6 @@
                                 <div id="slide-badge-aaa-norm" class="slide-badge"></div>
                             </div>
                         </div>
-                        <!-- Text -->
                         <p id="slide-example-body" class="text-xl leading-relaxed opacity-90">
                             Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
                         </p>
@@ -504,7 +464,6 @@
         </div>
     </div>
 
-    <!-- Logic -->
     <script>
         // --- State ---
         const state = {
@@ -718,7 +677,7 @@
             });
             els.btnDownloadSlide.addEventListener('click', downloadSlide);
 
-            // Font Inputs
+            // Font Inputs (Google)
             els.fontHeaderInput.addEventListener('change', (e) => {
                 const fontName = e.target.value.trim();
                 if(fontName) {
@@ -735,7 +694,67 @@
             });
         }
 
-        // --- Font Logic ---
+        // --- Custom Font Upload Logic ---
+        window.handleFontFile = async function(input, type) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Simple visual feedback
+            const textInput = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
+            textInput.value = "Loading File...";
+            textInput.disabled = true;
+
+            try {
+                // Read file
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const arrayBuffer = e.target.result;
+                    // Create a unique font name so we can reference it
+                    const fontName = `Custom${type.charAt(0).toUpperCase() + type.slice(1)}Font`; 
+                    
+                    // Use the FontFace API
+                    const fontFace = new FontFace(fontName, arrayBuffer);
+                    
+                    await fontFace.load();
+                    document.fonts.add(fontFace);
+
+                    // Apply to Elements
+                    if (type === 'header') {
+                        state.headerFont = file.name;
+                        els.slideMainTitle.style.fontFamily = `"${fontName}", sans-serif`;
+                        els.slideExampleHeader.style.fontFamily = `"${fontName}", sans-serif`;
+                        els.slideFontNameHeader.textContent = file.name + " (Custom)";
+                    } else {
+                        state.bodyFont = file.name;
+                        els.slideSubtitle.style.fontFamily = `"${fontName}", sans-serif`;
+                        els.slideExampleBody.style.fontFamily = `"${fontName}", sans-serif`;
+                        els.slideFontNameBody.textContent = file.name + " (Custom)";
+                    }
+                    
+                    // Reset input visuals
+                    textInput.value = file.name;
+                    textInput.classList.remove('border-agency-600', 'border-red-500');
+                    textInput.classList.add('border-green-500');
+                    textInput.disabled = false;
+                };
+
+                reader.onerror = () => {
+                    alert('Error reading font file');
+                    textInput.disabled = false;
+                    textInput.value = '';
+                };
+
+                reader.readAsArrayBuffer(file);
+
+            } catch (err) {
+                console.error(err);
+                alert("Could not load custom font.");
+                textInput.disabled = false;
+                textInput.value = '';
+            }
+        };
+
+        // --- Font Logic (Google) ---
         function loadGoogleFont(fontName, type) {
             if(!fontName) return;
             
