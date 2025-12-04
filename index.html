@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrandSafe | Design Workbench</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <link id="header-font-link" rel="stylesheet" href="">
     <link id="body-font-link" rel="stylesheet" href="">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -37,18 +38,30 @@
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         /* Custom Utilities */
-        body { background-color: #0f172a; color: #f8fafc; }
-        
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
         /* Swatch Interactions */
-        .swatch-delete { opacity: 0; transition: opacity 0.2s ease; }
-        .swatch-container:hover .swatch-delete { opacity: 1; }
-        .swatch-container:active { transform: scale(0.95); }
-        
+        .swatch-delete {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .swatch-container:hover .swatch-delete {
+            opacity: 1;
+        }
+
+        .swatch-container:active {
+            transform: scale(0.95);
+        }
+
         /* Color input styling override */
         input[type="color"] {
             -webkit-appearance: none;
@@ -60,40 +73,67 @@
             border-radius: 50%;
             cursor: pointer;
         }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; border: 1px solid #475569; }
-        
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+            border: 1px solid #475569;
+        }
+
         /* Smooth transitions */
-        .transition-colors-fast { transition: color 0.1s, background-color 0.1s, border-color 0.1s; }
-        
+        .transition-colors-fast {
+            transition: color 0.1s, background-color 0.1s, border-color 0.1s;
+        }
+
         /* Active Mode Indicator Animation */
         .mode-active {
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
             background-color: rgba(30, 41, 59, 1);
         }
+
         .mode-inactive {
             opacity: 0.7;
         }
+
         .mode-inactive:hover {
             opacity: 1;
             background-color: rgba(30, 41, 59, 0.8);
         }
 
         /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
 
         /* Crosshair cursor for image picker */
-        .cursor-crosshair { cursor: crosshair; }
+        .cursor-crosshair {
+            cursor: crosshair;
+        }
 
         /* Range Slider Styling */
         input[type=range] {
-            -webkit-appearance: none; 
-            background: transparent; 
+            -webkit-appearance: none;
+            background: transparent;
         }
+
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 12px;
@@ -101,21 +141,22 @@
             border-radius: 50%;
             background: #3b82f6;
             cursor: pointer;
-            margin-top: -5px; 
+            margin-top: -5px;
         }
+
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 2px;
             cursor: pointer;
             background: #475569;
         }
-        
+
         /* Slide Modal */
         .slide-modal {
             backdrop-filter: blur(10px);
             background-color: rgba(15, 23, 42, 0.9);
         }
-        
+
         /* 16:9 Aspect Ratio */
         .aspect-16-9 {
             aspect-ratio: 16 / 9;
@@ -129,11 +170,14 @@
             font-size: 1rem;
             white-space: nowrap;
         }
+
         .slide-badge i {
-            font-size: 1.25rem; /* Larger icons */
+            font-size: 1.25rem;
+            /* Larger icons */
             margin-right: 6px;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); 
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
         }
+
         .slide-badge span {
             opacity: 0.9;
             font-size: 0.85rem;
@@ -141,6 +185,7 @@
         }
     </style>
 </head>
+
 <body class="h-screen flex flex-col overflow-hidden text-slate-200">
 
     <header class="border-b border-agency-700 bg-agency-900/95 backdrop-blur px-6 py-4 flex justify-between items-center z-10 shrink-0">
@@ -149,17 +194,17 @@
             <h1 class="text-xl font-bold tracking-tight">Brand<span class="text-blue-500">Safe</span></h1>
         </div>
         <div class="flex items-center gap-4">
-             <button id="btn-show-slide" class="text-xs bg-agency-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition font-medium flex items-center gap-2">
+            <button id="btn-show-slide" class="text-xs bg-agency-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition font-medium flex items-center gap-2">
                 <i class="fa-solid fa-desktop"></i> Presentation Mode
             </button>
         </div>
     </header>
 
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        
+
         <section class="w-full md:w-5/12 lg:w-4/12 border-r border-agency-700 flex flex-col bg-agency-800/50 overflow-y-auto custom-scrollbar">
             <div class="p-6 space-y-8">
-                
+
                 <div>
                     <div class="flex justify-between items-end mb-3">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">1. Source Image</h2>
@@ -170,9 +215,9 @@
                     </div>
 
                     <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 text-center transition cursor-pointer group min-h-[200px] flex flex-col items-center justify-center overflow-hidden">
-                        
+
                         <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-                        
+
                         <div id="upload-placeholder" class="pointer-events-none p-8">
                             <i class="fa-solid fa-eye-dropper text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
                             <p class="text-sm font-medium text-slate-300">Upload Image</p>
@@ -186,17 +231,17 @@
                 </div>
 
                 <div>
-                     <div class="flex justify-between items-center mb-3">
+                    <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">2. Palette</h2>
                         <button id="clear-palette" class="text-[10px] text-slate-500 hover:text-red-400 underline">Clear All</button>
-                     </div>
-                     
-                     <div class="flex flex-wrap gap-2 mb-4">
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
                         <button onclick="handleSwatchClick('#000000')" class="w-10 h-10 rounded-lg bg-black border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure Black">
                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 text-white rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
                         </button>
                         <button onclick="handleSwatchClick('#ffffff')" class="w-10 h-10 rounded-lg bg-white border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure White">
-                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 text-black rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 text-black rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
                         </button>
 
                         <div class="flex-1 flex min-w-[140px]">
@@ -205,7 +250,7 @@
                                 <i class="fa-solid fa-plus text-xs"></i>
                             </button>
                         </div>
-                     </div>
+                    </div>
 
                     <div id="palette-grid" class="grid grid-cols-5 gap-3 min-h-[60px]">
                         <div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">
@@ -230,7 +275,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
+
                         <div id="control-bg" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-active">
                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('bg')"></div>
 
@@ -261,9 +306,9 @@
                         </div>
 
                         <div id="control-text" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-inactive">
-                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('text')"></div>
+                            <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('text')"></div>
 
-                             <div class="relative z-10 pointer-events-none">
+                            <div class="relative z-10 pointer-events-none">
                                 <div class="flex justify-between items-start mb-2">
                                     <label class="text-xs font-semibold text-agency-500 uppercase tracking-wider">Typography</label>
                                     <div class="w-3 h-3 rounded-full bg-slate-600" id="indicator-text"></div>
@@ -293,7 +338,7 @@
                 </div>
 
                 <div class="bg-agency-800 rounded-2xl p-6 border border-agency-700 shadow-lg">
-                     <div class="flex justify-between items-start mb-6 gap-4">
+                    <div class="flex justify-between items-start mb-6 gap-4">
                         <div class="flex flex-col min-w-0">
                             <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider truncate">WCAG Check</h2>
                             <span class="text-xs text-agency-600 mt-1">Raw Ratio: <span id="contrast-ratio" class="font-mono font-bold">--</span></span>
@@ -357,9 +402,9 @@
     </main>
 
     <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
-        
+
         <div class="absolute top-4 right-4 flex gap-3 z-50">
-             <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
+            <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
                 <i class="fa-solid fa-download"></i> Download PNG
             </button>
             <button id="close-slide" class="text-slate-400 hover:text-white bg-agency-800 p-2 rounded-full w-10 h-10 flex items-center justify-center transition">
@@ -368,34 +413,23 @@
         </div>
 
         <div class="absolute top-4 left-4 z-50 flex flex-col gap-2 items-start bg-agency-800/90 backdrop-blur p-3 rounded-lg border border-agency-700 shadow-xl">
-            
             <div class="flex items-center gap-2">
                 <label class="text-[10px] text-slate-400 font-bold w-16">HEADER:</label>
-                <input list="google-fonts-list" id="font-header-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Google or Upload...">
-                <label class="bg-agency-700 hover:bg-blue-600 border border-agency-600 text-slate-200 rounded px-2 py-1 cursor-pointer transition" title="Upload TTF/OTF">
-                    <i class="fa-solid fa-paperclip text-xs"></i>
-                    <input type="file" class="hidden" accept=".ttf, .otf, .woff, .woff2" onchange="handleFontFile(this, 'header')">
-                </label>
+                <input list="google-fonts-list" id="font-header-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Font name...">
             </div>
-
             <div class="flex items-center gap-2">
                 <label class="text-[10px] text-slate-400 font-bold w-16">BODY:</label>
-                <input list="google-fonts-list" id="font-body-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Google or Upload...">
-                <label class="bg-agency-700 hover:bg-blue-600 border border-agency-600 text-slate-200 rounded px-2 py-1 cursor-pointer transition" title="Upload TTF/OTF">
-                    <i class="fa-solid fa-paperclip text-xs"></i>
-                    <input type="file" class="hidden" accept=".ttf, .otf, .woff, .woff2" onchange="handleFontFile(this, 'body')">
-                </label>
+                <input list="google-fonts-list" id="font-body-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Font name...">
             </div>
-
             <datalist id="google-fonts-list">
                 </datalist>
         </div>
 
         <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
             <div class="flex-1 px-16 py-12 md:px-20 md:py-16 flex flex-col justify-center relative z-10">
-                
+
                 <div class="flex justify-between items-end mb-8">
-                    <div class="flex flex-col justify-center gap-2"> 
+                    <div class="flex flex-col justify-center gap-2">
                         <h1 id="slide-main-title" class="text-5xl md:text-6xl font-bold tracking-tighter mb-4">
                             Huisstijl.
                         </h1>
@@ -424,7 +458,7 @@
                 <div class="w-full h-px bg-current opacity-20 mb-10"></div>
 
                 <div class="flex-1 grid grid-cols-[1fr_auto_1fr] gap-12 items-start">
-                    
+
                     <div class="flex flex-col gap-6">
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
@@ -480,21 +514,21 @@
 
         // --- Top 300 + Modern Google Fonts List ---
         const popularGoogleFonts = [
-            "Bricolage Grotesque", "Inter", "Roboto", "Open Sans", "Noto Sans JP", "Lato", "Montserrat", "Roboto Condensed", "Source Sans Pro", "Oswald", "Poppins", 
-            "Roboto Mono", "Raleway", "Noto Sans", "PT Sans", "Mukta", "Merriweather", "Roboto Slab", "Nunito", "Playfair Display", 
-            "Rubik", "Lora", "Work Sans", "Nunito Sans", "Fira Sans", "Quicksand", "Barlow", "Inconsolata", "Titillium Web", 
-            "PT Serif", "Heebo", "Libre Franklin", "DM Sans", "Arimo", "Karla", "Josefin Sans", "Mulish", "Libre Baskerville", 
-            "Ubuntu", "PT Sans Narrow", "Oxygen", "Bebas Neue", "Bitter", "Cabin", "Dancing Script", "Source Code Pro", "Abel", 
-            "Prompt", "Varela Round", "Exo 2", "Anton", "Maven Pro", "Hind", "Fjalla One", "Crimson Text", "Pacifico", "Lobster", 
-            "Yanone Kaffeesatz", "Comfortaa", "Arvo", "Noto Serif", "Slabo 27px", "Merriweather Sans", "Asap", "Signika", 
-            "Archivo Narrow", "Questrial", "Catamaran", "Cairo", "Amatic SC", "Cuprum", "Muli", "Frank Ruhl Libre", 
-            "Barlow Condensed", "Play", "Pathway Gothic One", "Rokkitt", "Alegreya", "Exo", "EB Garamond", "Righteous", "Crete Round", 
-            "Overpass", "Old Standard TT", "Cinzel", "Domine", "Changa", "Rajdhani", "Cormorant Garamond", "Kanit", "Teko", 
-            "Source Serif Pro", "Permanent Marker", "Bree Serif", "Vollkorn", "Patua One", "Abril Fatface", "Cookie", "Francois One", 
-            "Russo One", "Acme", "Alegreya Sans", "Chivo", "Alfa Slab One", "Didact Gothic", "Great Vibes", "Amaranth", "Philosopher", 
-            "Satisfy", "Courgette", "Quattrocento Sans", "Gloria Hallelujah", "News Cycle", "Glegoo", "Saira Condensed", 
-            "Cardo", "Fredoka One", "Jura", "Orbitron", "Kalam", "Volkhov", "Sacramento", "Prata", 
-            "Yellowtail", "Poiret One", "Monoton", "Kaushan Script", "Marck Script", "Space Grotesk", "Syne", "Outfit", "Epilogue", 
+            "Bricolage Grotesque", "Inter", "Roboto", "Open Sans", "Noto Sans JP", "Lato", "Montserrat", "Roboto Condensed", "Source Sans Pro", "Oswald", "Poppins",
+            "Roboto Mono", "Raleway", "Noto Sans", "PT Sans", "Mukta", "Merriweather", "Roboto Slab", "Nunito", "Playfair Display",
+            "Rubik", "Lora", "Work Sans", "Nunito Sans", "Fira Sans", "Quicksand", "Barlow", "Inconsolata", "Titillium Web",
+            "PT Serif", "Heebo", "Libre Franklin", "DM Sans", "Arimo", "Karla", "Josefin Sans", "Mulish", "Libre Baskerville",
+            "Ubuntu", "PT Sans Narrow", "Oxygen", "Bebas Neue", "Bitter", "Cabin", "Dancing Script", "Source Code Pro", "Abel",
+            "Prompt", "Varela Round", "Exo 2", "Anton", "Maven Pro", "Hind", "Fjalla One", "Crimson Text", "Pacifico", "Lobster",
+            "Yanone Kaffeesatz", "Comfortaa", "Arvo", "Noto Serif", "Slabo 27px", "Merriweather Sans", "Asap", "Signika",
+            "Archivo Narrow", "Questrial", "Catamaran", "Cairo", "Amatic SC", "Cuprum", "Muli", "Frank Ruhl Libre",
+            "Barlow Condensed", "Play", "Pathway Gothic One", "Rokkitt", "Alegreya", "Exo", "EB Garamond", "Righteous", "Crete Round",
+            "Overpass", "Old Standard TT", "Cinzel", "Domine", "Changa", "Rajdhani", "Cormorant Garamond", "Kanit", "Teko",
+            "Source Serif Pro", "Permanent Marker", "Bree Serif", "Vollkorn", "Patua One", "Abril Fatface", "Cookie", "Francois One",
+            "Russo One", "Acme", "Alegreya Sans", "Chivo", "Alfa Slab One", "Didact Gothic", "Great Vibes", "Amaranth", "Philosopher",
+            "Satisfy", "Courgette", "Quattrocento Sans", "Gloria Hallelujah", "News Cycle", "Glegoo", "Saira Condensed",
+            "Cardo", "Fredoka One", "Jura", "Orbitron", "Kalam", "Volkhov", "Sacramento", "Prata",
+            "Yellowtail", "Poiret One", "Monoton", "Kaushan Script", "Marck Script", "Space Grotesk", "Syne", "Outfit", "Epilogue",
             "Manrope", "Urbanist", "Be Vietnam Pro", "Plus Jakarta Sans", "Lexend", "Sora", "JetBrains Mono"
         ].sort();
 
@@ -522,25 +556,25 @@
             controlText: document.getElementById('control-text'),
             indicatorBg: document.getElementById('indicator-bg'),
             indicatorText: document.getElementById('indicator-text'),
-            
+
             // Inputs
             bgPicker: document.getElementById('bg-picker'),
             bgText: document.getElementById('bg-text'),
             bgLightness: document.getElementById('bg-lightness'),
-            
+
             textPicker: document.getElementById('text-picker'),
             textText: document.getElementById('text-text'),
             textLightness: document.getElementById('text-lightness'),
 
             btnSwap: document.getElementById('btn-swap'),
-            
+
             // Visuals
             bgVisual: document.getElementById('bg-visual-indicator'),
             textVisual: document.getElementById('text-visual-indicator'),
-            
+
             // Preview
             card: document.getElementById('preview-card'),
-            
+
             // Scoreboard
             ratioDisplay: document.getElementById('contrast-ratio'),
             badges: {
@@ -571,7 +605,7 @@
             },
             slideFontNameHeader: document.getElementById('slide-font-name-header'),
             slideFontNameBody: document.getElementById('slide-font-name-body'),
-            
+
             // Font Controls
             fontHeaderInput: document.getElementById('font-header-input'),
             fontBodyInput: document.getElementById('font-body-input'),
@@ -586,7 +620,7 @@
             updateUI();
             setupEvents();
             setupFonts();
-            
+
             // Set default font names if not loaded from storage
             if (els.slideFontNameHeader.textContent === '') els.slideFontNameHeader.textContent = state.headerFont;
             if (els.slideFontNameBody.textContent === '') els.slideFontNameBody.textContent = state.bodyFont;
@@ -595,11 +629,11 @@
         function setupFonts() {
             // Populate Datalist
             els.fontsDatalist.innerHTML = popularGoogleFonts.map(f => `<option value="${f}">`).join('');
-            
+
             // Load saved fonts
             const savedHeader = localStorage.getItem('brandSafe_headerFont');
             const savedBody = localStorage.getItem('brandSafe_bodyFont');
-            
+
             if (savedHeader) {
                 state.headerFont = savedHeader;
                 els.fontHeaderInput.value = savedHeader;
@@ -616,7 +650,7 @@
         function setupEvents() {
             // Canvas/Upload
             els.fileInput.addEventListener('change', handleImageUpload);
-            
+
             els.fileInput.addEventListener('dragenter', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
             els.fileInput.addEventListener('dragover', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
             els.fileInput.addEventListener('dragleave', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
@@ -624,10 +658,12 @@
 
             els.canvas.addEventListener('click', handleCanvasClick);
             els.btnResetImage.addEventListener('click', resetImage);
-            
+
             // Manual Palette
             els.btnAddManual.addEventListener('click', addManualPaletteColor);
-            els.manualInput.addEventListener('keypress', (e) => { if(e.key==='Enter') addManualPaletteColor() });
+            els.manualInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addManualPaletteColor()
+            });
             els.btnClearPalette.addEventListener('click', () => {
                 state.palette = [];
                 renderPalette();
@@ -636,12 +672,12 @@
             // Native Pickers
             els.bgPicker.addEventListener('input', (e) => {
                 state.baseBg = e.target.value;
-                els.bgLightness.value = 0; 
+                els.bgLightness.value = 0;
                 updateColor('bg', e.target.value);
             });
             els.textPicker.addEventListener('input', (e) => {
                 state.baseText = e.target.value;
-                els.textLightness.value = 0; 
+                els.textLightness.value = 0;
                 updateColor('text', e.target.value);
             });
 
@@ -673,99 +709,39 @@
             });
             els.btnCloseSlide.addEventListener('click', () => els.slideModal.classList.add('hidden'));
             els.slideModal.addEventListener('click', (e) => {
-                if(e.target === els.slideModal) els.slideModal.classList.add('hidden');
+                if (e.target === els.slideModal) els.slideModal.classList.add('hidden');
             });
             els.btnDownloadSlide.addEventListener('click', downloadSlide);
 
-            // Font Inputs (Google)
+            // Font Inputs
             els.fontHeaderInput.addEventListener('change', (e) => {
                 const fontName = e.target.value.trim();
-                if(fontName) {
+                if (fontName) {
                     loadGoogleFont(fontName, 'header');
                     localStorage.setItem('brandSafe_headerFont', fontName);
                 }
             });
             els.fontBodyInput.addEventListener('change', (e) => {
                 const fontName = e.target.value.trim();
-                if(fontName) {
+                if (fontName) {
                     loadGoogleFont(fontName, 'body');
                     localStorage.setItem('brandSafe_bodyFont', fontName);
                 }
             });
         }
 
-        // --- Custom Font Upload Logic ---
-        window.handleFontFile = async function(input, type) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Simple visual feedback
-            const textInput = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
-            textInput.value = "Loading File...";
-            textInput.disabled = true;
-
-            try {
-                // Read file
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const arrayBuffer = e.target.result;
-                    // Create a unique font name so we can reference it
-                    const fontName = `Custom${type.charAt(0).toUpperCase() + type.slice(1)}Font`; 
-                    
-                    // Use the FontFace API
-                    const fontFace = new FontFace(fontName, arrayBuffer);
-                    
-                    await fontFace.load();
-                    document.fonts.add(fontFace);
-
-                    // Apply to Elements
-                    if (type === 'header') {
-                        state.headerFont = file.name;
-                        els.slideMainTitle.style.fontFamily = `"${fontName}", sans-serif`;
-                        els.slideExampleHeader.style.fontFamily = `"${fontName}", sans-serif`;
-                        els.slideFontNameHeader.textContent = file.name + " (Custom)";
-                    } else {
-                        state.bodyFont = file.name;
-                        els.slideSubtitle.style.fontFamily = `"${fontName}", sans-serif`;
-                        els.slideExampleBody.style.fontFamily = `"${fontName}", sans-serif`;
-                        els.slideFontNameBody.textContent = file.name + " (Custom)";
-                    }
-                    
-                    // Reset input visuals
-                    textInput.value = file.name;
-                    textInput.classList.remove('border-agency-600', 'border-red-500');
-                    textInput.classList.add('border-green-500');
-                    textInput.disabled = false;
-                };
-
-                reader.onerror = () => {
-                    alert('Error reading font file');
-                    textInput.disabled = false;
-                    textInput.value = '';
-                };
-
-                reader.readAsArrayBuffer(file);
-
-            } catch (err) {
-                console.error(err);
-                alert("Could not load custom font.");
-                textInput.disabled = false;
-                textInput.value = '';
-            }
-        };
-
-        // --- Font Logic (Google) ---
+        // --- Font Logic ---
         function loadGoogleFont(fontName, type) {
-            if(!fontName) return;
-            
+            if (!fontName) return;
+
             const input = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
             const linkTag = type === 'header' ? els.headerFontLink : els.bodyFontLink;
-            
+
             input.classList.add('border-yellow-500');
             input.classList.remove('border-agency-600', 'border-red-500', 'border-green-500');
 
             const url = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;700;800&display=swap`;
-            
+
             linkTag.onload = () => {
                 if (type === 'header') {
                     state.headerFont = fontName;
@@ -815,9 +791,9 @@
         }
 
         function resetImage() {
-            els.fileInput.value = ''; 
-            els.fileInput.classList.remove('hidden'); 
-            els.btnResetImage.classList.add('hidden'); 
+            els.fileInput.value = '';
+            els.fileInput.classList.remove('hidden');
+            els.btnResetImage.classList.add('hidden');
             els.pickerHint.classList.add('opacity-0');
             els.canvasContainer.classList.add('hidden');
             els.uploadPlaceholder.classList.remove('hidden');
@@ -852,7 +828,7 @@
             }
             // Explicitly update state and UI without skipping inputs
             state[state.activeMode] = hex;
-            updateUI(); 
+            updateUI();
         }
 
         window.addToPalette = function(type) {
@@ -882,21 +858,24 @@
         function renderPalette() {
             els.paletteGrid.innerHTML = '';
             if (state.palette.length === 0) {
-                 els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
-                 return;
+                els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
+                return;
             }
             state.palette.forEach((hex, index) => {
                 const swatch = document.createElement('div');
                 swatch.className = 'swatch-container relative w-full pt-[100%] rounded-lg cursor-pointer shadow-md border border-slate-700/50 overflow-hidden group hover:scale-105 transition-transform duration-200';
                 swatch.style.backgroundColor = hex;
                 swatch.addEventListener('click', (e) => {
-                    if(e.target.closest('.delete-btn')) return;
+                    if (e.target.closest('.delete-btn')) return;
                     handleSwatchClick(hex);
                 });
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn swatch-delete absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors z-10';
                 deleteBtn.innerHTML = '<i class="fa-solid fa-times text-[10px]"></i>';
-                deleteBtn.onclick = (e) => { e.stopPropagation(); deleteSwatch(index); };
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteSwatch(index);
+                };
                 swatch.appendChild(deleteBtn);
                 els.paletteGrid.appendChild(swatch);
             });
@@ -907,21 +886,23 @@
             const baseHex = type === 'bg' ? state.baseBg : state.baseText;
             const amt = parseInt(amount);
             const rgb = hexToRgb(baseHex);
-            const shift = amt * 5; 
+            const shift = amt * 5;
             const newR = clamp(rgb.r + shift);
             const newG = clamp(rgb.g + shift);
             const newB = clamp(rgb.b + shift);
             const newHex = rgbToHex(newR, newG, newB);
             state[type] = newHex;
-            updateUI(); 
+            updateUI();
         }
-        
-        function clamp(num) { return Math.min(Math.max(Math.round(num), 0), 255); }
+
+        function clamp(num) {
+            return Math.min(Math.max(Math.round(num), 0), 255);
+        }
 
         // --- Core UI Updates ---
         function updateColor(type, hex) {
             state[type] = hex;
-            updateUI(); 
+            updateUI();
         }
 
         function updateUI(skipInputType = null) {
@@ -946,7 +927,7 @@
             els.slideContainer.style.color = state.text;
             els.slideBgVal.textContent = state.bg.toUpperCase();
             els.slideTextVal.textContent = state.text.toUpperCase();
-            
+
             const ratio = calculateContrastRatio(state.bg, state.text);
             els.ratioDisplay.textContent = ratio.toFixed(2);
             els.ratioDisplay.style.color = getRateColor(ratio);
@@ -956,16 +937,16 @@
 
         function updateSlideCompliance() {
             const ratio = calculateContrastRatio(state.bg, state.text);
-            
+
             // High Visibility Icons (Green Check / Red X) - Simple Circles
             const pass = '<i class="fa-solid fa-circle-check text-green-500"></i>';
             const fail = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
-            
+
             const updateBadge = (el, passed, label) => {
                 el.innerHTML = `${passed ? pass : fail} <span>${label}</span>`;
-                el.style.opacity = passed ? '1' : '0.5'; 
+                el.style.opacity = passed ? '1' : '0.5';
             };
-            
+
             updateBadge(els.slideBadges.aaNorm, ratio >= 4.5, 'AA');
             updateBadge(els.slideBadges.aaaNorm, ratio >= 7.0, 'AAA');
             updateBadge(els.slideBadges.aaLarge, ratio >= 3.0, 'AA');
@@ -977,7 +958,11 @@
             const btn = els.btnDownloadSlide;
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing';
-            html2canvas(els.slideContainer, { scale: 2, backgroundColor: null, useCORS: true }).then(canvas => {
+            html2canvas(els.slideContainer, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true
+            }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `brandsafe-slide-${Date.now()}.png`;
                 link.href = canvas.toDataURL();
@@ -1034,18 +1019,18 @@
                     if (!hex.startsWith('#')) hex = '#' + hex;
                     state[type] = hex;
                     // Reset base color for lightness slider
-                    if(type === 'bg') state.baseBg = hex;
-                    if(type === 'text') state.baseText = hex;
-                    updateUI(type); 
+                    if (type === 'bg') state.baseBg = hex;
+                    if (type === 'text') state.baseText = hex;
+                    updateUI(type);
                 }
             } else {
                 const rgbParts = cleanVal.split(',').map(n => parseInt(n.trim()));
                 if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
                     const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
                     state[type] = hex;
-                     // Reset base color for lightness slider
-                    if(type === 'bg') state.baseBg = hex;
-                    if(type === 'text') state.baseText = hex;
+                    // Reset base color for lightness slider
+                    if (type === 'bg') state.baseBg = hex;
+                    if (type === 'text') state.baseText = hex;
                     updateUI(type);
                 }
             }
@@ -1064,22 +1049,43 @@
             setBadge(els.badges.aaLarge, ratio >= 3.0);
             setBadge(els.badges.aaaLarge, ratio >= 4.5);
         }
+
         function getRateColor(ratio) {
-            if (ratio >= 7) return '#4ade80'; 
-            if (ratio >= 4.5) return '#facc15'; 
-            if (ratio >= 3) return '#fb923c'; 
-            return '#f87171'; 
+            if (ratio >= 7) return '#4ade80';
+            if (ratio >= 4.5) return '#facc15';
+            if (ratio >= 3) return '#fb923c';
+            return '#f87171';
         }
-        function isValidHex(hex) { return /^#?[0-9A-F]{6}$/i.test(hex); }
-        function rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+
+        function isValidHex(hex) {
+            return /^#?[0-9A-F]{6}$/i.test(hex);
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 0, g: 0, b: 0 };
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : {
+                r: 0,
+                g: 0,
+                b: 0
+            };
         }
+
         function getLuminance(r, g, b) {
-            const a = [r, g, b].map(function(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+            const a = [r, g, b].map(function(v) {
+                v /= 255;
+                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+            });
             return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
         }
+
         function calculateContrastRatio(hex1, hex2) {
             const rgb1 = hexToRgb(hex1);
             const rgb2 = hexToRgb(hex2);
@@ -1094,4 +1100,5 @@
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
+
 </html>
