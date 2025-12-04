@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrandSafe | Design Workbench</title>
+    <title>BrandSafe | Design Workbench + PDF Scanner</title>
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Dynamic Font Links -->
     <link id="header-font-link" rel="stylesheet" href="">
     <link id="body-font-link" rel="stylesheet" href="">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,9 +39,18 @@
         }
     </script>
 
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Html2Canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Set worker for PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
 
     <style>
         /* Custom Utilities */
@@ -139,10 +151,22 @@
             font-size: 0.85rem;
             letter-spacing: 0.05em;
         }
+        
+        /* Spinner */
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-200">
 
+    <!-- Header -->
     <header class="border-b border-agency-700 bg-agency-900/95 backdrop-blur px-6 py-4 flex justify-between items-center z-10 shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
@@ -155,42 +179,64 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
 
+        <!-- LEFT PANEL: Image & Palette -->
         <section class="w-full md:w-5/12 lg:w-4/12 border-r border-agency-700 flex flex-col bg-agency-800/50 overflow-y-auto custom-scrollbar">
             <div class="p-6 space-y-8">
 
+                <!-- Upload Zone -->
                 <div>
                     <div class="flex justify-between items-end mb-3">
-                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">1. Source Image</h2>
+                        <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">1. Source File</h2>
                         <div class="flex gap-3 items-center">
-                            <span id="picker-hint" class="text-[10px] text-blue-400 opacity-0 transition-opacity">Click to pick</span>
-                            <button id="btn-reset-image" class="text-[10px] text-slate-400 hover:text-white underline hidden">Change Image</button>
+                            <span id="picker-hint" class="text-[10px] text-blue-400 opacity-0 transition-opacity">Click image to pick</span>
+                            <button id="btn-reset-image" class="text-[10px] text-slate-400 hover:text-white underline hidden">Change File</button>
                         </div>
                     </div>
 
                     <div id="drop-zone" class="relative border-2 border-dashed border-agency-600 rounded-xl bg-agency-800 text-center transition cursor-pointer group min-h-[200px] flex flex-col items-center justify-center overflow-hidden">
                         
-                        <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        <!-- File Input overlay -->
+                        <input type="file" id="file-input" accept="image/*,.pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
                         
+                        <!-- Empty State -->
                         <div id="upload-placeholder" class="pointer-events-none p-8">
-                            <i class="fa-solid fa-eye-dropper text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
-                            <p class="text-sm font-medium text-slate-300">Upload Image</p>
-                            <p class="text-xs text-slate-500 mt-1">to enable color picker</p>
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-agency-500 mb-3 group-hover:text-blue-400 transition"></i>
+                            <p class="text-sm font-medium text-slate-300">Upload Image or PDF</p>
+                            <p class="text-xs text-slate-500 mt-1">Images: Color Picker<br>PDFs: Auto-scan for codes</p>
                         </div>
 
+                        <!-- Image Canvas (Hidden until loaded) -->
                         <div id="canvas-container" class="hidden relative w-full h-full bg-agency-900 z-10">
                             <canvas id="img-canvas" class="cursor-crosshair w-full h-auto object-contain block mx-auto"></canvas>
+                        </div>
+                        
+                        <!-- PDF Status (Hidden until loaded) -->
+                        <div id="pdf-status" class="hidden relative w-full h-full bg-agency-900 z-10 flex flex-col items-center justify-center p-6">
+                            <div class="text-center">
+                                <i class="fa-solid fa-file-pdf text-4xl text-red-500 mb-4"></i>
+                                <h3 class="text-white font-bold mb-1">PDF Scanned</h3>
+                                <p id="pdf-msg" class="text-xs text-slate-400">Found 0 colors</p>
+                            </div>
+                        </div>
+
+                        <!-- Loading Spinner -->
+                        <div id="loading-overlay" class="hidden absolute inset-0 bg-agency-900/90 z-30 flex items-center justify-center">
+                            <div class="loader"></div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Palette Section -->
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">2. Palette</h2>
                         <button id="clear-palette" class="text-[10px] text-slate-500 hover:text-red-400 underline">Clear All</button>
                     </div>
                     
+                    <!-- Quick Tools -->
                     <div class="flex flex-wrap gap-2 mb-4">
                         <button onclick="handleSwatchClick('#000000')" class="w-10 h-10 rounded-lg bg-black border border-agency-600 hover:scale-105 transition shadow-lg relative group" title="Pure Black">
                             <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 text-white rounded-lg"><i class="fa-solid fa-plus text-xs"></i></span>
@@ -207,9 +253,10 @@
                         </div>
                     </div>
 
+                    <!-- Palette Grid -->
                     <div id="palette-grid" class="grid grid-cols-5 gap-3 min-h-[60px]">
                         <div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">
-                            Click image to extract colors
+                            Upload file to extract colors
                         </div>
                     </div>
                 </div>
@@ -217,12 +264,15 @@
             </div>
         </section>
 
+        <!-- RIGHT PANEL: Editor & Checks -->
         <section class="flex-1 bg-agency-900 flex flex-col overflow-y-auto custom-scrollbar">
             <div class="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto w-full space-y-8">
 
+                <!-- Editor Controls -->
                 <div>
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider">Design Workbench</h2>
+                        <!-- Format Toggle -->
                         <div class="flex bg-agency-800 rounded-lg p-1 border border-agency-700">
                             <button onclick="toggleFormat('hex')" id="fmt-hex" class="px-3 py-1 text-[10px] font-bold rounded bg-slate-600 text-white shadow-sm transition-all">HEX</button>
                             <button onclick="toggleFormat('rgb')" id="fmt-rgb" class="px-3 py-1 text-[10px] font-bold rounded text-slate-500 hover:text-slate-300 transition-all">RGB</button>
@@ -231,7 +281,9 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
+                        <!-- Background Control -->
                         <div id="control-bg" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-active">
+                            <!-- Click overlay for mode selection -->
                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('bg')"></div>
 
                             <div class="relative z-10 pointer-events-none">
@@ -249,6 +301,7 @@
                                     </button>
                                     <input type="color" id="bg-picker" class="opacity-50 hover:opacity-100 transition-opacity">
                                 </div>
+                                <!-- Lightness Slider -->
                                 <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
                                     <div class="flex justify-between text-[10px] text-slate-500 mb-1">
                                         <span>Darker</span>
@@ -260,7 +313,9 @@
                             </div>
                         </div>
 
+                        <!-- Text Control -->
                         <div id="control-text" class="bg-agency-800 p-5 rounded-xl border border-agency-700 transition-all duration-200 group relative mode-inactive">
+                            <!-- Click overlay for mode selection -->
                             <div class="absolute inset-0 z-0 cursor-pointer" onclick="setMode('text')"></div>
 
                             <div class="relative z-10 pointer-events-none">
@@ -278,6 +333,7 @@
                                     </button>
                                     <input type="color" id="text-picker" class="opacity-50 hover:opacity-100 transition-opacity">
                                 </div>
+                                <!-- Lightness Slider -->
                                 <div class="mt-3 pt-3 border-t border-agency-700/50 pointer-events-auto">
                                     <div class="flex justify-between text-[10px] text-slate-500 mb-1">
                                         <span>Darker</span>
@@ -292,7 +348,9 @@
                     </div>
                 </div>
 
+                <!-- Stats & Checks -->
                 <div class="bg-agency-800 rounded-2xl p-6 border border-agency-700 shadow-lg">
+                    <!-- Header -->
                     <div class="flex justify-between items-start mb-6 gap-4">
                         <div class="flex flex-col min-w-0">
                             <h2 class="text-sm font-semibold text-agency-500 uppercase tracking-wider truncate">WCAG Check</h2>
@@ -303,12 +361,14 @@
                         </button>
                     </div>
 
+                    <!-- Grid -->
                     <div class="grid grid-cols-2 gap-4 mb-1 px-1">
                         <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AA</div>
                         <div class="text-xs font-bold text-agency-500 uppercase tracking-widest opacity-70">Level AAA</div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
+                        <!-- AA Normal -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
@@ -316,6 +376,7 @@
                             </div>
                             <div id="badge-aa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
+                        <!-- AAA Normal -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Normal Text</p>
@@ -323,6 +384,7 @@
                             </div>
                             <div id="badge-aaa-normal" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
+                        <!-- AA Large -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
@@ -330,6 +392,7 @@
                             </div>
                             <div id="badge-aa-large" class="text-red-500 shrink-0"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
                         </div>
+                        <!-- AAA Large -->
                         <div class="bg-agency-900/50 p-3 rounded-lg border border-agency-700 flex justify-between items-center gap-3 group hover:bg-agency-900 transition">
                             <div class="min-w-0">
                                 <p class="text-xs text-slate-400 font-medium truncate">Large Text</p>
@@ -340,6 +403,7 @@
                     </div>
                 </div>
 
+                <!-- Live Preview (Small) -->
                 <div>
                     <h2 class="text-sm font-semibold text-agency-500 mb-3 uppercase tracking-wider">Working Preview</h2>
                     <div id="preview-card" class="w-full p-8 rounded-xl shadow-inner transition-colors-fast border border-slate-700/20 flex flex-col items-start gap-4">
@@ -356,8 +420,10 @@
         </section>
     </main>
 
+    <!-- SLIDE PRESENTATION MODAL -->
     <div id="slide-modal" class="fixed inset-0 z-50 hidden slide-modal flex items-center justify-center p-4 md:p-8">
         
+        <!-- Controls overlay (Top Right) -->
         <div class="absolute top-4 right-4 flex gap-3 z-50">
             <button id="download-slide" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full shadow-lg font-semibold flex items-center gap-2 transition">
                 <i class="fa-solid fa-download"></i> Download PNG
@@ -367,6 +433,7 @@
             </button>
         </div>
 
+        <!-- Controls overlay (Top Left) -->
         <div class="absolute top-4 left-4 z-50 flex flex-col gap-2 items-start bg-agency-800/90 backdrop-blur p-3 rounded-lg border border-agency-700 shadow-xl">
             <div class="flex items-center gap-2">
                 <label class="text-[10px] text-slate-400 font-bold w-16">HEADER:</label>
@@ -377,13 +444,17 @@
                 <input list="google-fonts-list" id="font-body-input" class="bg-agency-900 border border-agency-600 rounded px-2 py-1 text-xs text-white w-40 placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="Font name...">
             </div>
             <datalist id="google-fonts-list">
-                </datalist>
+                <!-- Populated via JS -->
+            </datalist>
         </div>
 
         <div class="w-full max-w-6xl aspect-16-9 bg-agency-900 relative shadow-2xl rounded-sm overflow-hidden flex flex-col transition-colors-fast" id="slide-container">
+            <!-- Slide Content -->
             <div class="flex-1 px-16 py-12 md:px-20 md:py-16 flex flex-col justify-center relative z-10">
                 
+                <!-- Top Section: Titles, Colors, Icon -->
                 <div class="flex justify-between items-end mb-8">
+                    <!-- Left: Titles -->
                     <div class="flex flex-col justify-center gap-2"> 
                         <h1 id="slide-main-title" class="text-5xl md:text-6xl font-bold tracking-tighter mb-4">
                             Huisstijl.
@@ -393,6 +464,7 @@
                         </p>
                     </div>
 
+                    <!-- Right: Colors & Icon -->
                     <div class="flex items-center gap-8">
                         <div class="flex flex-col items-end text-right gap-3">
                             <div>
@@ -404,17 +476,22 @@
                                 <span id="slide-text-val" class="font-mono text-2xl">#FFFFFF</span>
                             </div>
                         </div>
+                        <!-- Icon -->
                         <div class="opacity-20">
                             <i class="fa-solid fa-universal-access text-6xl"></i>
                         </div>
                     </div>
                 </div>
 
+                <!-- Divider -->
                 <div class="w-full h-px bg-current opacity-20 mb-10"></div>
 
+                <!-- Bottom Section: Text Examples -->
                 <div class="flex-1 grid grid-cols-[1fr_auto_1fr] gap-12 items-start">
                     
+                    <!-- Left Column: Large Text -->
                     <div class="flex flex-col gap-6">
+                        <!-- Header for Column -->
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
                                 <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Grote tekst</span>
@@ -425,14 +502,18 @@
                                 <div id="slide-badge-aaa-large" class="slide-badge"></div>
                             </div>
                         </div>
+                        <!-- Text -->
                         <p id="slide-example-header" class="text-5xl font-bold leading-tight">
                             Lorem ipsum dolor sit amet.
                         </p>
                     </div>
 
+                    <!-- Center: Vertical Divider -->
                     <div class="w-px h-full bg-current opacity-20"></div>
 
+                    <!-- Right Column: Normal Text -->
                     <div class="flex flex-col gap-6">
+                        <!-- Header for Column -->
                         <div class="flex justify-between items-end border-b border-current border-opacity-10 pb-3">
                             <div class="flex flex-col">
                                 <span class="text-[10px] uppercase tracking-widest font-bold opacity-50 font-sans mb-0.5">Normale tekst</span>
@@ -443,6 +524,7 @@
                                 <div id="slide-badge-aaa-norm" class="slide-badge"></div>
                             </div>
                         </div>
+                        <!-- Text -->
                         <p id="slide-example-body" class="text-xl leading-relaxed opacity-90">
                             Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
                         </p>
@@ -453,6 +535,7 @@
         </div>
     </div>
 
+    <!-- Logic -->
     <script>
     // --- State ---
     const state = {
@@ -464,7 +547,8 @@
         baseBg: '#1e293b',
         baseText: '#ffffff',
         headerFont: 'Inter',
-        bodyFont: 'Inter'
+        bodyFont: 'Inter',
+        GOOGLE_API_KEY: '' // Optional: Add key here for live Google Fonts
     };
 
     // --- Font Lists ---
@@ -500,6 +584,9 @@
         dropZone: document.getElementById('drop-zone'),
         uploadPlaceholder: document.getElementById('upload-placeholder'),
         canvasContainer: document.getElementById('canvas-container'),
+        pdfStatus: document.getElementById('pdf-status'),
+        pdfMsg: document.getElementById('pdf-msg'),
+        loadingOverlay: document.getElementById('loading-overlay'),
         canvas: document.getElementById('img-canvas'),
         pickerHint: document.getElementById('picker-hint'),
         paletteGrid: document.getElementById('palette-grid'),
@@ -588,25 +675,13 @@
     }
 
     function setupFonts() {
-        // Populate Datalist with BOTH System and Google Fonts
         let options = '';
-        
-        // Add System Fonts Group
-        systemFonts.forEach(f => {
-            options += `<option value="${f}">System Font</option>`;
-        });
-        
-        // Add Google Fonts Group
-        popularGoogleFonts.forEach(f => {
-            options += `<option value="${f}">Google Font</option>`;
-        });
-
+        systemFonts.forEach(f => { options += `<option value="${f}">System Font</option>`; });
+        popularGoogleFonts.forEach(f => { options += `<option value="${f}">Google Font</option>`; });
         els.fontsDatalist.innerHTML = options;
         
-        // Load saved fonts
         const savedHeader = localStorage.getItem('brandSafe_headerFont');
         const savedBody = localStorage.getItem('brandSafe_bodyFont');
-        
         if (savedHeader) {
             state.headerFont = savedHeader;
             els.fontHeaderInput.value = savedHeader;
@@ -621,8 +696,8 @@
 
     // --- Event Listeners ---
     function setupEvents() {
-        // Canvas/Upload
-        els.fileInput.addEventListener('change', handleImageUpload);
+        // File Handling (Image & PDF)
+        els.fileInput.addEventListener('change', handleFileUpload);
         
         els.fileInput.addEventListener('dragenter', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
         els.fileInput.addEventListener('dragover', () => els.dropZone.classList.add('border-blue-500', 'bg-agency-700/50'));
@@ -630,7 +705,7 @@
         els.fileInput.addEventListener('drop', () => els.dropZone.classList.remove('border-blue-500', 'bg-agency-700/50'));
 
         els.canvas.addEventListener('click', handleCanvasClick);
-        els.btnResetImage.addEventListener('click', resetImage);
+        els.btnResetImage.addEventListener('click', resetFile);
         
         // Manual Palette
         els.btnAddManual.addEventListener('click', addManualPaletteColor);
@@ -722,22 +797,18 @@
         const input = type === 'header' ? els.fontHeaderInput : els.fontBodyInput;
         const linkTag = type === 'header' ? els.headerFontLink : els.bodyFontLink;
         
-        // Feedback State
         input.classList.add('border-yellow-500');
         input.classList.remove('border-agency-600', 'border-red-500', 'border-green-500');
 
-        // 1. CHECK IF SYSTEM FONT
-        // We compare case-insensitive for better UX
         const isSystem = systemFonts.some(sf => sf.toLowerCase() === fontName.toLowerCase());
 
         if (isSystem) {
             applyFontStyle(fontName, type);
             input.classList.remove('border-yellow-500');
             input.classList.add('border-green-500');
-            return; // Stop here, no download needed
+            return; 
         }
 
-        // 2. FETCH GOOGLE FONT
         const url = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;700;800&display=swap`;
         
         linkTag.onload = () => {
@@ -755,35 +826,109 @@
         linkTag.href = url;
     }
 
-    // --- Image Handling ---
-    function handleImageUpload(e) {
+    // --- File Handling (Image & PDF) ---
+    function handleFileUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                els.uploadPlaceholder.classList.add('hidden');
-                els.canvasContainer.classList.remove('hidden');
-                els.pickerHint.classList.remove('opacity-0');
-                els.fileInput.classList.add('hidden');
-                els.btnResetImage.classList.remove('hidden');
-                els.canvas.width = img.width;
-                els.canvas.height = img.height;
-                const ctx = els.canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
+
+        els.uploadPlaceholder.classList.add('hidden');
+        els.fileInput.classList.add('hidden');
+        els.btnResetImage.classList.remove('hidden');
+
+        if (file.type === 'application/pdf') {
+            // PDF Logic
+            els.canvasContainer.classList.add('hidden');
+            els.pdfStatus.classList.remove('hidden');
+            els.pickerHint.classList.add('opacity-0');
+            extractColorsFromPdf(file);
+        } else {
+            // Image Logic
+            els.pdfStatus.classList.add('hidden');
+            els.canvasContainer.classList.remove('hidden');
+            els.pickerHint.classList.remove('opacity-0');
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    els.canvas.width = img.width;
+                    els.canvas.height = img.height;
+                    const ctx = els.canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = event.target.result;
             };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        }
     }
 
-    function resetImage() {
+    async function extractColorsFromPdf(file) {
+        els.loadingOverlay.classList.remove('hidden');
+        els.pdfMsg.textContent = "Scanning document...";
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            
+            let fullText = "";
+            
+            // Loop through all pages
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + " ";
+            }
+
+            // Regex for colors
+            // 1. HEX: #123456 (6 digits)
+            const hexRegex = /#[0-9a-fA-F]{6}\b/g;
+            // 2. RGB: rgb(0,0,0) or similar patterns
+            const rgbRegex = /(?:rgb|RGB)\s*\(?\s*(\d{1,3})\s*[,|\s]\s*(\d{1,3})\s*[,|\s]\s*(\d{1,3})\s*\)?/g;
+
+            const foundHex = fullText.match(hexRegex) || [];
+            let foundRgb = [];
+            
+            let match;
+            while ((match = rgbRegex.exec(fullText)) !== null) {
+                // Convert found RGB to Hex
+                const r = parseInt(match[1]);
+                const g = parseInt(match[2]);
+                const b = parseInt(match[3]);
+                if (r <= 255 && g <= 255 && b <= 255) {
+                    foundRgb.push(rgbToHex(r, g, b));
+                }
+            }
+
+            // Combine and Deduplicate
+            const uniqueColors = [...new Set([...foundHex, ...foundRgb])];
+            
+            // Add to state
+            uniqueColors.forEach(hex => {
+                if (!state.palette.includes(hex)) {
+                    state.palette.push(hex.toLowerCase()); // normalize
+                }
+            });
+
+            // Update UI
+            els.pdfMsg.innerHTML = `Scan Complete.<br>Found <span class="text-white font-bold">${uniqueColors.length}</span> unique color codes.`;
+            renderPalette();
+
+        } catch (error) {
+            console.error(error);
+            els.pdfMsg.textContent = "Error reading PDF.";
+        } finally {
+            els.loadingOverlay.classList.add('hidden');
+        }
+    }
+
+    function resetFile() {
         els.fileInput.value = ''; 
         els.fileInput.classList.remove('hidden'); 
         els.btnResetImage.classList.add('hidden'); 
         els.pickerHint.classList.add('opacity-0');
         els.canvasContainer.classList.add('hidden');
+        els.pdfStatus.classList.add('hidden');
         els.uploadPlaceholder.classList.remove('hidden');
         const ctx = els.canvas.getContext('2d');
         ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
@@ -814,7 +959,6 @@
             state.baseText = hex;
             els.textLightness.value = 0;
         }
-        // Explicitly update state and UI without skipping inputs
         state[state.activeMode] = hex;
         updateUI(); 
     }
@@ -846,7 +990,7 @@
     function renderPalette() {
         els.paletteGrid.innerHTML = '';
         if (state.palette.length === 0) {
-            els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Click image to extract colors</div>`;
+            els.paletteGrid.innerHTML = `<div class="col-span-5 text-center py-8 text-agency-600 text-sm border-2 border-dashed border-agency-700/50 rounded-lg">Upload file to extract colors</div>`;
             return;
         }
         state.palette.forEach((hex, index) => {
@@ -921,7 +1065,6 @@
     function updateSlideCompliance() {
         const ratio = calculateContrastRatio(state.bg, state.text);
         
-        // High Visibility Icons (Green Check / Red X) - Simple Circles
         const pass = '<i class="fa-solid fa-circle-check text-green-500"></i>';
         const fail = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
         
@@ -997,7 +1140,6 @@
                 let hex = cleanVal;
                 if (!hex.startsWith('#')) hex = '#' + hex;
                 state[type] = hex;
-                // Reset base color for lightness slider
                 if(type === 'bg') state.baseBg = hex;
                 if(type === 'text') state.baseText = hex;
                 updateUI(type); 
@@ -1007,7 +1149,6 @@
             if (rgbParts.length === 3 && rgbParts.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
                 const hex = rgbToHex(rgbParts[0], rgbParts[1], rgbParts[2]);
                 state[type] = hex;
-                // Reset base color for lightness slider
                 if(type === 'bg') state.baseBg = hex;
                 if(type === 'text') state.baseText = hex;
                 updateUI(type);
